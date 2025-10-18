@@ -1,0 +1,171 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace JunX.NETStandard.SQLBuilder
+{
+    /// <summary>
+    /// Provides a fluent interface for composing SQL <c>WHERE</c> clauses, including logical operators and grouping, for use within generic SQL builder commands.
+    /// </summary>
+    /// <typeparam name="TCommand">The parent SQL builder type that this clause is attached to, enabling fluent chaining back to the command.</typeparam>
+    /// <typeparam name="T">An enum type representing the schema or column identifiers used in the conditional expressions.</typeparam>
+    public class WhereClause<TCommand, T>
+        where TCommand: class
+        where T: Enum
+    {
+        private readonly TCommand _parent;
+        private readonly StringBuilder _cmd;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WhereClause{TCommand, T}"/> class, binding it to the parent SQL builder and the shared command buffer.
+        /// </summary>
+        /// <param name="parent">The parent SQL builder instance that this clause is attached to, enabling fluent chaining.</param>
+        /// <param name="cmd">The <see cref="StringBuilder"/> used to compose and accumulate the SQL command text.</param>
+        public WhereClause(TCommand parent, StringBuilder cmd)
+        {
+            _parent = parent;
+            _cmd = cmd;
+        }
+        /// <summary>
+        /// Ends the <c>WHERE</c> clause composition and returns control to the parent SQL builder for continued fluent chaining.
+        /// </summary>
+        /// <returns>The parent <typeparamref name="TCommand"/> instance.</returns>
+        public TCommand EndWhere => _parent;
+
+
+        #region Where
+        /// <summary>
+        /// Appends a SQL <c>WHERE</c> clause with the specified condition to the command buffer.
+        /// </summary>
+        /// <param name="Condition">The raw SQL condition to include in the <c>WHERE</c> clause.</param>
+        /// <returns>The current <see cref="WhereClause{TCommand, T}"/> instance for fluent chaining.</returns>
+        public WhereClause<TCommand, T> Where (string Condition)
+        {
+            _cmd.Append(" WHERE ").Append(Condition);
+            return this;
+        }
+        /// <summary>
+        /// Appends a SQL <c>WHERE</c> clause using the specified column, operator, and value.
+        /// </summary>
+        /// <param name="Left">The enum value representing the column name to compare.</param>
+        /// <param name="Operator">The SQL operator used in the comparison (e.g., equals, greater than).</param>
+        /// <param name="Right">The value to compare against, represented as a string.</param>
+        /// <returns>The current <see cref="WhereClause{TCommand, T}"/> instance for fluent chaining.</returns>
+        public WhereClause<TCommand, T> Where(T Left, SQLOperator Operator, string Right)
+        {
+            _cmd.Append(" WHERE ");
+            _cmd.Append(Left.ToString() + Operator.ToSymbol() + Right);
+            return this;
+        }
+        #endregion
+
+
+        #region Group
+        /// <summary>
+        /// Begins a grouped SQL condition by appending an opening parenthesis followed by the specified condition.
+        /// </summary>
+        /// <param name="Condition">The condition to include within the opening of the group.</param>
+        /// <returns>The current <see cref="WhereClause{TCommand, T}"/> instance for fluent chaining.</returns>
+        public WhereClause<TCommand, T> StartGroup(string Condition)
+        {
+            _cmd.Append(" (").Append(Condition);
+            return this;
+        }
+        /// <summary>
+        /// Begins a grouped SQL condition by appending an opening parenthesis followed by a comparison using a column from the primary table.
+        /// </summary>
+        /// <param name="Left">The enum value representing the column name from the primary table.</param>
+        /// <param name="Operator">The SQL operator used in the comparison.</param>
+        /// <param name="Right">The value to compare against, represented as a string.</param>
+        /// <returns>The current <see cref="WhereClause&lt;TCommand, T&gt;"/> instance for fluent chaining.</returns>
+        public WhereClause<TCommand, T> StartGroup(T Left, SQLOperator Operator, string Right)
+        {
+            _cmd.Append(" (");
+            _cmd.Append(Left.ToString() + Operator.ToSymbol() + Right);
+            return this;
+        }
+        /// <summary>
+        /// Appends a closing parenthesis to terminate a grouped SQL condition.
+        /// </summary>
+        /// <returns>The current <see cref="WhereClause{TCommand, T}"/> instance for fluent chaining.</returns>
+        public WhereClause<TCommand, T> EndGroup
+        {
+            get
+            {
+                _cmd.Append(")");
+                return this;
+            }
+        }
+        #endregion
+
+        #region AND
+        /// <summary>
+        /// Appends a SQL <c>AND</c> connector to the current <c>WHERE</c> clause, enabling composition of additional conditions.
+        /// </summary>
+        /// <returns>The current <see cref="WhereClause&lt;TCommand, T&gt;"/> instance for fluent chaining.</returns>
+        public WhereClause<TCommand, T> And()
+        {
+            _cmd.Append(" AND ");
+            return this;
+        }
+        /// <summary>
+        /// Appends a SQL <c>AND</c> condition to the current <c>WHERE</c> clause using the specified raw condition string.
+        /// </summary>
+        /// <param name="Condition">The raw SQL condition to append after the <c>AND</c> keyword.</param>
+        /// <returns>The current <see cref="WhereClause{TCommand, T}"/> instance for fluent chaining.</returns>
+        public WhereClause<TCommand, T> And(string Condition)
+        {
+            _cmd.Append(" AND ").Append(Condition);
+            return this;
+        }
+        /// <summary>
+        /// Appends a SQL <c>AND</c> condition to the current <c>WHERE</c> clause using the specified column, operator, and value.
+        /// </summary>
+        /// <param name="Left">The enum value representing the column name to compare.</param>
+        /// <param name="Operator">The SQL operator used in the comparison.</param>
+        /// <param name="Right">The value to compare against, represented as a string.</param>
+        /// <returns>The current <see cref="WhereClause{TCommand, T}"/> instance for fluent chaining.</returns>
+        public WhereClause<TCommand, T> And(T Left, SQLOperator Operator, string Right)
+        {
+            _cmd.Append(" AND ");
+            _cmd.Append(Left.ToString() + Operator.ToSymbol() + Right);
+            return this;
+        }
+        #endregion
+
+        #region OR
+        /// <summary>
+        /// Appends a SQL <c>OR</c> connector to the current <c>WHERE</c> clause, enabling composition of alternative conditions.
+        /// </summary>
+        /// <returns>The current <see cref="WhereClause&lt;TCommand, T&gt;"/> instance for fluent chaining.</returns>
+        public WhereClause<TCommand, T> Or()
+        {
+            _cmd.Append(" OR ");
+            return this;
+        }
+        /// <summary>
+        /// Appends a SQL <c>OR</c> condition to the current <c>WHERE</c> clause using the specified raw condition string.
+        /// </summary>
+        /// <param name="Condition">The raw SQL condition to append after the <c>OR</c> keyword.</param>
+        /// <returns>The current <see cref="WhereClause{TCommand, T}"/> instance for fluent chaining.</returns>
+        public WhereClause<TCommand, T> Or(string Condition)
+        {
+            _cmd.Append(" OR ").Append(Condition);
+            return this;
+        }
+        /// <summary>
+        /// Appends a SQL <c>OR</c> condition to the current <c>WHERE</c> clause using the specified column, operator, and value.
+        /// </summary>
+        /// <param name="Left">The enum value representing the column name to compare.</param>
+        /// <param name="Operator">The SQL operator used in the comparison.</param>
+        /// <param name="Right">The value to compare against, represented as a string.</param>
+        /// <returns>The current <see cref="WhereClause{TCommand, T}"/> instance for fluent chaining.</returns>
+        public WhereClause<TCommand, T> Or(T Left, SQLOperator Operator, string Right)
+        {
+            _cmd.Append(" OR ");
+            _cmd.Append(Left.ToString() + Operator.ToSymbol() + Right);
+            return this;
+        }
+        #endregion
+    }
+}
