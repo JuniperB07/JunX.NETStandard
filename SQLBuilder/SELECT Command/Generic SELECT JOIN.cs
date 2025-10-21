@@ -100,6 +100,17 @@ namespace JunX.NETStandard.SQLBuilder
                 return this;
             }
         }
+        /// <summary>
+        /// Appends a DISTINCT clause to the SQL command to ensure unique rows in the result set.
+        /// </summary>
+        public SelectCommand<T, J> Distinct
+        {
+            get
+            {
+                cmd.Append(" DISTINCT ");
+                return this;
+            }
+        }
         /*
         /// <summary>
         /// Appends a <c>WHERE</c> clause to the SQL <c>SELECT</c> statement, initiating conditional filtering.

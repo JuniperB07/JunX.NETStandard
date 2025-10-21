@@ -23,6 +23,7 @@ namespace JunX.NETStandard.MySQL
         internal static string ConnectionString;
         internal static string CommandText;
         internal static List<string> Values;
+        internal static ConnectionStringMetadata ConnectionStringInformation;
 
         /// <summary>
         /// Initializes all internal MySQL-related objects and resets associated metadata to their default states.
@@ -41,6 +42,7 @@ namespace JunX.NETStandard.MySQL
             ConnectionString = null;
             CommandText = null;
             Values = new List<string>();
+            ConnectionStringInformation = new ConnectionStringMetadata("", "", "");
         }
     }
 }

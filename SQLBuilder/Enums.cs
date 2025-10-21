@@ -68,7 +68,9 @@ namespace JunX.NETStandard.SQLBuilder
         Equal,
         NotEqual,
         GreaterThan,
+        GreaterThanEqualTo,
         LessThan,
+        LessThanEqualTo,
         Like
     }
     /// <summary>
@@ -104,8 +106,12 @@ namespace JunX.NETStandard.SQLBuilder
                     return "!=";
                 case SQLOperator.GreaterThan:
                     return ">";
+                case SQLOperator.GreaterThanEqualTo:
+                    return ">=";
                 case SQLOperator.LessThan:
                     return "<";
+                case SQLOperator.LessThanEqualTo:
+                    return "<=";
                 case SQLOperator.Like:
                     return " LIKE ";
                 default:

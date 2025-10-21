@@ -48,6 +48,17 @@ namespace JunX.NETStandard.SQLBuilder
 
         #region Properties
         /// <summary>
+        /// Appends a DISTINCT clause to the SQL command to eliminate duplicate rows from the result set.
+        /// </summary>
+        public SelectCommand Distinct
+        {
+            get
+            {
+                cmd.Append(" DISTINCT ");
+                return this;
+            }
+        }
+        /// <summary>
         /// Begins composition of a SQL <c>WHERE</c> clause for a <c>SELECT</c> command without generic table bindings.
         /// </summary>
         /// <returns>A new <see cref="WhereClause&lt;SelectCommand&gt;"/> instance bound to this command.</returns>

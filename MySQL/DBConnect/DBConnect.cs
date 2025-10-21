@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using MySql.Data.MySqlClient;
 using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 namespace JunX.NETStandard.MySQL
 {
@@ -26,6 +27,7 @@ namespace JunX.NETStandard.MySQL
             InternalVariables.InitializeAll();
             InternalVariables.ConnectionString = ConnString;
         }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DBConnect"/> class using the specified <see cref="MySqlConnection"/>.
         /// </summary>
@@ -42,6 +44,18 @@ namespace JunX.NETStandard.MySQL
             InternalVariables.Connection = Connection;
             InternalVariables.Command.Connection = InternalVariables.Connection;
             InternalVariables.Command.CommandType = CommandType.Text;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DBConnect"/> class using the specified connection metadata.
+        /// Internal variables are initialized and populated with connection details.
+        /// </summary>
+        /// <param name="ConnectionStringInfo">The metadata used to construct and store the MySQL connection string.</param>
+        public DBConnect(ConnectionStringMetadata ConnectionStringInfo)
+        {
+            InternalVariables.InitializeAll();
+            InternalVariables.ConnectionStringInformation = ConnectionStringInfo;
+            InternalVariables.ConnectionString = InternalVariables.ConnectionStringInformation.ConnectionString;
         }
     }
 }

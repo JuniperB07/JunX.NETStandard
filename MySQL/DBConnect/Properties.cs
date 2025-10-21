@@ -114,5 +114,9 @@ namespace JunX.NETStandard.MySQL
         /// It is typically assigned before executing queries or commands against the database.
         /// </remarks>
         public string CommandText { get { return InternalVariables.CommandText; } set { InternalVariables.CommandText = value; } }
+        /// <summary>
+        /// Gets or sets the current connection string metadata used for MySQL access.
+        /// </summary>
+        public ConnectionStringMetadata ConnectionStringInformation { get { return InternalVariables.ConnectionStringInformation; } set { InternalVariables.ConnectionStringInformation = value; } }
     }
 }

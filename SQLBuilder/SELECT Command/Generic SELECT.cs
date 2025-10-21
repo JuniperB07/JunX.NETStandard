@@ -84,6 +84,17 @@ namespace JunX.NETStandard.SQLBuilder
         /// </summary>
         /// <returns>A new <see cref="WhereClause&lt;SelectCommand&lt;T&gt;, T&gt;"/> instance bound to this command.</returns>
         public WhereClause<SelectCommand<T>, T> StartWhere => new WhereClause<SelectCommand<T>, T>(this, cmd);
+        /// <summary>
+        /// Appends a DISTINCT clause to the SQL command to ensure unique rows in the result set.
+        /// </summary>
+        public SelectCommand<T> Distinct
+        {
+            get
+            {
+                cmd.Append(" DISTINCT ");
+                return this;
+            }
+        }
         /*
         /// <summary>
         /// Appends a <c>WHERE</c> clause to the SQL <c>SELECT</c> statement, initiating conditional filtering.

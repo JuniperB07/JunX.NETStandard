@@ -61,6 +61,7 @@ namespace JunX.NETStandard.Utility
         public static T GetEnumValue(string ReadableValue, char ReadableValueDelimiter, char EnumDelimiter)
         {
             string enumFormat = ReadableValue.Replace(ReadableValueDelimiter, EnumDelimiter);
+            
 
             foreach(string value in ToList())
                 if(value == enumFormat)
@@ -79,6 +80,27 @@ namespace JunX.NETStandard.Utility
         public static string GetReadableValue(T EnumValue, char EnumValueDelimiter)
         {
             return EnumValue.ToString().Replace(EnumValueDelimiter, ' ');
+        }
+
+        /// <summary>
+        /// Converts a sequence of enum values into a list of human-readable strings by replacing delimiter characters.
+        /// Useful for displaying enum values in UI or reports with improved readability.
+        /// </summary>
+        /// <typeparam name="T">The enum type to process.</typeparam>
+        /// <param name="EnumValues">The collection of enum values to convert.</param>
+        /// <param name="EnumValueDelimiter">The character used in enum names that should be replaced with a space.</param>
+        /// <returns>
+        /// A list of strings where each enum value has its delimiters replaced with spaces for readability.
+        /// </returns>
+        public static List<string> GetReadableValues(char EnumValueDelimiter)
+        {
+            List<string> rValues = new List<string>();
+            List<string> rawVal = ToList();
+
+            foreach (string EV in rawVal)
+                rValues.Add(EV.ToString().Replace(EnumValueDelimiter, ' '));
+
+            return rValues;
         }
     }
 }
