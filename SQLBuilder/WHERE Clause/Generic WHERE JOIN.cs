@@ -11,9 +11,9 @@ namespace JunX.NETStandard.SQLBuilder
     /// <typeparam name="T">An enum type representing the primary table's column identifiers.</typeparam>
     /// <typeparam name="J">An enum type representing the joined table's column identifiers.</typeparam>
     public class WhereClause<TCommand, T, J>
-        where TCommand: class
-        where T: Enum
-        where J: Enum
+        where TCommand : class
+        where T : Enum
+        where J : Enum
     {
         private readonly TCommand _parent;
         private readonly StringBuilder _cmd;
@@ -217,6 +217,101 @@ namespace JunX.NETStandard.SQLBuilder
         {
             _cmd.Append(" OR ");
             _cmd.Append(typeof(J).Name + "." + Left.ToString() + Operator.ToSymbol() + Right);
+            return this;
+        }
+        #endregion
+
+        #region BETWEEN
+        /// <summary>
+        /// Appends a SQL <c>WHERE</c> clause with a <c>BETWEEN</c> condition for the specified column and range.
+        /// </summary>
+        /// <param name="Column">The column to apply the <c>BETWEEN</c> filter to.</param>
+        /// <param name="Left">The lower bound of the range, inserted as-is into the SQL statement.</param>
+        /// <param name="Right">The upper bound of the range, inserted as-is into the SQL statement.</param>
+        /// <returns>
+        /// The current <see cref="WhereClause{TCommand, T, J}"/> instance with the appended <c>WHERE ... BETWEEN</c> clause.
+        /// </returns>
+        /// <remarks>
+        /// This method constructs a SQL fragment in the form:
+        /// <code>
+        /// WHERE Column BETWEEN Left AND Right
+        /// </code>
+        /// It does not escape or quote values, and assumes the caller provides valid SQL-compatible strings.
+        /// If a <c>WHERE</c> clause already exists, this method may produce invalid SQL unless manually adjusted.
+        /// </remarks>
+        public WhereClause<TCommand, T, J> WhereBetween(T Column, string Left, string Right)
+        {
+            _cmd.Append(" WHERE " + Column.ToString());
+            _cmd.Append(" BETWEEN " + Left + " AND " + Right);
+            return this;
+        }
+        /// <summary>
+        /// Appends a SQL <c>WHERE</c> clause with a <c>BETWEEN</c> condition for the specified join column and range.
+        /// </summary>
+        /// <param name="Column">The join column to apply the <c>BETWEEN</c> filter to.</param>
+        /// <param name="Left">The lower bound of the range, inserted directly into the SQL statement.</param>
+        /// <param name="Right">The upper bound of the range, inserted directly into the SQL statement.</param>
+        /// <returns>
+        /// The current <see cref="WhereClause{TCommand, T, J}"/> instance with the appended <c>WHERE ... BETWEEN</c> clause.
+        /// </returns>
+        /// <remarks>
+        /// This method constructs a SQL fragment in the form:
+        /// <code>
+        /// WHERE Column BETWEEN Left AND Right
+        /// </code>
+        /// It assumes no prior <c>WHERE</c> clause exists and does not escape or quote values.
+        /// Use with caution when chaining multiple conditions or working with string/date values.
+        /// </remarks>
+        public WhereClause<TCommand, T, J> WhereBetween(J Column, string Left, string Right)
+        {
+            _cmd.Append(" WHERE " + Column.ToString());
+            _cmd.Append(" BETWEEN " + Left + " AND " + Right);
+            return this;
+        }
+        /// <summary>
+        /// Appends a SQL <c>BETWEEN</c> clause for the specified column and range values.
+        /// </summary>
+        /// <param name="Column">The column to apply the <c>BETWEEN</c> condition to.</param>
+        /// <param name="Left">The lower bound of the range, inserted directly into the SQL statement.</param>
+        /// <param name="Right">The upper bound of the range, inserted directly into the SQL statement.</param>
+        /// <returns>
+        /// The current <see cref="WhereClause{TCommand, T, J}"/> instance with the appended <c>BETWEEN</c> clause.
+        /// </returns>
+        /// <remarks>
+        /// This method constructs a SQL fragment in the form:
+        /// <code>
+        /// Column BETWEEN Left AND Right
+        /// </code>
+        /// It assumes that a <c>WHERE</c> or <c>AND</c> clause has already been appended.
+        /// Values are inserted as-is, without quoting or escaping. Use with caution when working with strings or dates.
+        /// </remarks>
+        public WhereClause<TCommand, T, J> Between(T Column, string Left, string Right)
+        {
+            _cmd.Append(" " + Column.ToString());
+            _cmd.Append(" BETWEEN " + Left + " AND " + Right);
+            return this;
+        }
+        /// <summary>
+        /// Appends a SQL <c>BETWEEN</c> clause for the specified join column and range values.
+        /// </summary>
+        /// <param name="Column">The join column to apply the <c>BETWEEN</c> condition to.</param>
+        /// <param name="Left">The lower bound of the range, inserted directly into the SQL statement.</param>
+        /// <param name="Right">The upper bound of the range, inserted directly into the SQL statement.</param>
+        /// <returns>
+        /// The current <see cref="WhereClause{TCommand, T, J}"/> instance with the appended <c>BETWEEN</c> clause.
+        /// </returns>
+        /// <remarks>
+        /// This method constructs a SQL fragment in the form:
+        /// <code>
+        /// Column BETWEEN Left AND Right
+        /// </code>
+        /// It assumes that a <c>WHERE</c> or <c>AND</c> clause has already been appended.
+        /// Values are inserted as-is, without quoting or escaping. Use with caution when working with strings or dates.
+        /// </remarks>
+        public WhereClause<TCommand, T, J> Between(J Column, string Left, string Right)
+        {
+            _cmd.Append(" " + Column.ToString());
+            _cmd.Append(" BETWEEN " + Left + " AND " + Right);
             return this;
         }
         #endregion

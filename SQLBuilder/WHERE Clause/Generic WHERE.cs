@@ -167,5 +167,54 @@ namespace JunX.NETStandard.SQLBuilder
             return this;
         }
         #endregion
+
+        #region BETWEEN
+        /// <summary>
+        /// Appends a SQL <c>WHERE</c> clause that filters the specified column between two values.
+        /// </summary>
+        /// <param name="Column">The column to apply the <c>BETWEEN</c> condition to.</param>
+        /// <param name="Left">The lower bound of the range.</param>
+        /// <param name="Right">The upper bound of the range.</param>
+        /// <returns>
+        /// The current <see cref="WhereClause{TCommand, T}"/> instance with the appended <c>WHERE ... BETWEEN</c> clause.
+        /// </returns>
+        /// <remarks>
+        /// This method constructs a SQL fragment in the form:
+        /// <code>
+        /// WHERE Column BETWEEN Left AND Right
+        /// </code>
+        /// It does not escape or quote values, and assumes the caller provides valid SQL-compatible strings.
+        /// If a <c>WHERE</c> clause already exists, this method may produce invalid SQL unless manually adjusted.
+        /// </remarks>
+        public WhereClause<TCommand, T> WhereBetween(T Column, string Left, string Right)
+        {
+            _cmd.Append(" WHERE " + Column.ToString());
+            _cmd.Append(" BETWEEN " + Left + " AND " + Right);
+            return this;
+        }
+        /// <summary>
+        /// Appends a SQL <c>BETWEEN</c> clause for the specified column and range values.
+        /// </summary>
+        /// <param name="Column">The column to apply the <c>BETWEEN</c> condition to.</param>
+        /// <param name="Left">The lower bound of the range.</param>
+        /// <param name="Right">The upper bound of the range.</param>
+        /// <returns>
+        /// The current <see cref="WhereClause{TCommand, T}"/> instance with the appended <c>BETWEEN</c> clause.
+        /// </returns>
+        /// <remarks>
+        /// This method constructs a SQL fragment in the form:
+        /// <code>
+        /// Column BETWEEN Left AND Right
+        /// </code>
+        /// It assumes the caller has already appended a <c>WHERE</c> or <c>AND</c> clause if needed.
+        /// Values are inserted as-is, without quoting or escaping. Use with caution for strings or dates.
+        /// </remarks>
+        public WhereClause<TCommand, T> Between(T Column, string Left, string Right)
+        {
+            _cmd.Append(" " + Column.ToString());
+            _cmd.Append(" BETWEEN " + Left + " AND " + Right);
+            return this;
+        }
+        #endregion
     }
 }
