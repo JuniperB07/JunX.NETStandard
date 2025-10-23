@@ -103,7 +103,7 @@ namespace JunX.NETStandard.SQLBuilder
                 case SQLOperator.Equal:
                     return "=";
                 case SQLOperator.NotEqual:
-                    return "!=";
+                    return "<>";
                 case SQLOperator.GreaterThan:
                     return ">";
                 case SQLOperator.GreaterThanEqualTo:
