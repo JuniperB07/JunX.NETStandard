@@ -27,7 +27,7 @@ namespace JunX.NETStandard.XML
         /// <remarks>
         /// This method loads the RDLC file as XML, extracts all unique <c>ReportParameter</c> names,
         /// sanitizes them into valid C# identifiers, and writes them as members of a public enum.
-        /// The enum name is derived from the RDLC filename (excluding extension).
+        /// The enum name is derived from the exported C# file name (excluding extension).
         /// <para>
         /// Example: If <paramref name="RDLCPath"/> is <c>InvoiceReport.rdlc</c>, the output will be:
         /// <code>
