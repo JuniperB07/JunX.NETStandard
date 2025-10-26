@@ -198,6 +198,33 @@ namespace JunX.NETStandard.SQLBuilder
             return this;
         }
         /// <summary>
+        /// Appends one or more column descriptors to the SELECT clause, prefixed with their type name.
+        /// </summary>
+        /// <param name="Columns">
+        /// A variable-length array of column descriptors of type <typeparamref name="T"/> to include in the SELECT clause.
+        /// </param>
+        /// <returns>
+        /// The current <see cref="SelectCommand{T, J}"/> instance for fluent chaining.
+        /// </returns>
+        /// <remarks>
+        /// Builds a comma-separated SELECT clause using the format: <c>TypeName.ColumnName</c>.
+        /// </remarks>
+        public SelectCommand<T, J> Select(params T[] Columns)
+        {
+            if (Columns.Length < 1)
+                throw new ArgumentException("Invalid parameter length.");
+
+            foreach(T C in Columns)
+            {
+                if (_hasColumns)
+                    cmd.Append(", ");
+                else
+                    _hasColumns = true;
+                cmd.Append(typeof(T).Name + "." + C.ToString());
+            }
+            return this;
+        }
+        /// <summary>
         /// Appends a column to the SQL <c>SELECT</c> clause using an enum-defined column from the joined table <typeparamref name="J"/>.
         /// </summary>
         /// <param name="Column">
@@ -217,6 +244,33 @@ namespace JunX.NETStandard.SQLBuilder
             else
                 _hasColumns = true;
             cmd.Append(typeof(J).Name + "." + Column.ToString());
+            return this;
+        }
+        /// <summary>
+        /// Appends one or more column descriptors of type <typeparamref name="J"/> to the SELECT clause, prefixed by their type name.
+        /// </summary>
+        /// <param name="Columns">
+        /// A variable-length array of column descriptors to include in the SELECT clause.
+        /// </param>
+        /// <returns>
+        /// The current <see cref="SelectCommand{T, J}"/> instance for fluent chaining.
+        /// </returns>
+        /// <remarks>
+        /// Builds a comma-separated SELECT clause using the format: <c>TypeName.ColumnName</c>.
+        /// </remarks>
+        public SelectCommand<T, J> Select(params J[] Columns)
+        {
+            if (Columns.Length < 1)
+                throw new ArgumentException("Invalid parameter length.");
+
+            foreach(J C in Columns)
+            {
+                if (_hasColumns)
+                    cmd.Append(", ");
+                else
+                    _hasColumns = true;
+                cmd.Append(typeof(J).Name + "." + C.ToString());
+            }
             return this;
         }
         /// <summary>
@@ -321,6 +375,34 @@ namespace JunX.NETStandard.SQLBuilder
             return this;
         }
         /// <summary>
+        /// Appends one or more aliased column descriptors of type <typeparamref name="T"/> to the SELECT clause.
+        /// </summary>
+        /// <param name="SelectAs">
+        /// A variable-length array of <see cref="AliasMetadata{T}"/> objects, each containing a fully qualified column and its alias.
+        /// </param>
+        /// <returns>
+        /// The current <see cref="SelectCommand{T, J}"/> instance for fluent chaining.
+        /// </returns>
+        /// <remarks>
+        /// Builds a comma-separated SELECT clause using the format: <c>FullyQualifiedColumn AS 'Alias'</c>.
+        /// </remarks>
+        public SelectCommand<T, J> SelectAs(params AliasMetadata<T>[] SelectAs)
+        {
+            if (SelectAs.Length < 1)
+                throw new ArgumentException("Invalid parameter length.");
+
+            foreach (AliasMetadata<T> SA in SelectAs)
+            {
+                if (_hasColumns)
+                    cmd.Append(", ");
+                else
+                    _hasColumns = true;
+
+                cmd.Append(SA.FullyQualified + " AS '" + SA.Alias + "'");
+            }
+            return this;
+        }
+        /// <summary>
         /// Appends aliased column selections to the SQL <c>SELECT</c> clause using metadata from the joined table <typeparamref name="J"/>.
         /// </summary>
         /// <param name="SelectAs">
@@ -337,6 +419,34 @@ namespace JunX.NETStandard.SQLBuilder
         /// </remarks>
         public SelectCommand<T, J> SelectAs(IEnumerable<AliasMetadata<J>> SelectAs)
         {
+            foreach (AliasMetadata<J> SA in SelectAs)
+            {
+                if (_hasColumns)
+                    cmd.Append(", ");
+                else
+                    _hasColumns = true;
+
+                cmd.Append(SA.FullyQualified + " AS '" + SA.Alias + "'");
+            }
+            return this;
+        }
+        /// <summary>
+        /// Appends one or more aliased column descriptors of type <typeparamref name="J"/> to the SELECT clause.
+        /// </summary>
+        /// <param name="SelectAs">
+        /// A variable-length array of <see cref="AliasMetadata{J}"/> objects, each containing a fully qualified column and its alias.
+        /// </param>
+        /// <returns>
+        /// The current <see cref="SelectCommand{T, J}"/> instance for fluent chaining.
+        /// </returns>
+        /// <remarks>
+        /// Builds a comma-separated SELECT clause using the format: <c>FullyQualifiedColumn AS 'Alias'</c>.
+        /// </remarks>
+        public SelectCommand<T, J> SelectAs(params AliasMetadata<J>[] SelectAs)
+        {
+            if (SelectAs.Length < 1)
+                throw new ArgumentException("Invalid parameter length.");
+
             foreach (AliasMetadata<J> SA in SelectAs)
             {
                 if (_hasColumns)

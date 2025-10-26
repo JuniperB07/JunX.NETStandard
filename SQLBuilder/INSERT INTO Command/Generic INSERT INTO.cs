@@ -104,6 +104,36 @@ namespace JunX.NETStandard.SQLBuilder
             }
             return this;
         }
+        /// <summary>
+        /// Appends one or more column descriptors to the INSERT INTO clause of the SQL command.
+        /// </summary>
+        /// <param name="Columns">
+        /// A variable-length array of column descriptors of type <typeparamref name="T"/> to include in the INSERT INTO clause.
+        /// </param>
+        /// <returns>
+        /// The current <see cref="InsertIntoCommand{T}"/> instance for fluent chaining.
+        /// </returns>
+        /// <remarks>
+        /// Builds a comma-separated column list enclosed in parentheses for the INSERT INTO clause.
+        /// </remarks>
+        public InsertIntoCommand<T> Column(params T[] Columns)
+        {
+            if (Columns.Length < 1)
+                throw new ArgumentException("Invalid parameter length.");
+
+            foreach (T C in Columns)
+            {
+                if (_hasColumns)
+                    cmd.Append(", ");
+                else
+                {
+                    cmd.Append(" (");
+                    _hasColumns = true;
+                }
+                cmd.Append(C.ToString());
+            }
+            return this;
+        }
         #endregion
 
         #region Values
@@ -151,6 +181,37 @@ namespace JunX.NETStandard.SQLBuilder
         public InsertIntoCommand<T> Values(IEnumerable<ValuesMetadata> Values)
         {
             foreach(ValuesMetadata V in Values)
+            {
+                if (_hasValues)
+                    cmd.Append(", ");
+                else
+                {
+                    cmd.Append(") VALUES (");
+                    _hasValues = true;
+                }
+
+                cmd.Append(V.Value);
+            }
+            return this;
+        }
+        /// <summary>
+        /// Appends one or more value descriptors to the VALUES clause of the INSERT INTO command.
+        /// </summary>
+        /// <param name="Values">
+        /// A variable-length array of <see cref="ValuesMetadata"/> objects representing the values to insert.
+        /// </param>
+        /// <returns>
+        /// The current <see cref="InsertIntoCommand{T}"/> instance for fluent chaining.
+        /// </returns>
+        /// <remarks>
+        /// Builds a comma-separated VALUES clause, appending each value in order after the column list.
+        /// </remarks>
+        public InsertIntoCommand<T> Values(params ValuesMetadata[] Values)
+        {
+            if (Values.Length < 1)
+                throw new ArgumentException("Invalid parameter length.");
+
+            foreach (ValuesMetadata V in Values)
             {
                 if (_hasValues)
                     cmd.Append(", ");

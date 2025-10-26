@@ -142,6 +142,33 @@ namespace JunX.NETStandard.SQLBuilder
             return this;
         }
         /// <summary>
+        /// Appends one or more raw column names to the SELECT clause of the SQL command.
+        /// </summary>
+        /// <param name="Columns">
+        /// A variable-length array of raw column name strings to include in the SELECT clause.
+        /// </param>
+        /// <returns>
+        /// The current <see cref="SelectCommand"/> instance for fluent chaining.
+        /// </returns>
+        /// <remarks>
+        /// Builds a comma-separated SELECT clause from plain string column names.
+        /// </remarks>
+        public SelectCommand Select(params string[] Columns)
+        {
+            if (Columns.Length < 1)
+                throw new ArgumentException("Invalid parameter length.");
+
+            foreach(string C in Columns)
+            {
+                if (_hasColumns)
+                    cmd.Append(", ");
+                else
+                    _hasColumns = true;
+                cmd.Append(C);
+            }
+            return this;
+        }
+        /// <summary>
         /// Appends multiple columns to the SQL <c>SELECT</c> clause using raw string identifiers.
         /// </summary>
         /// <param name="Columns">

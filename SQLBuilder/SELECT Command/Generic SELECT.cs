@@ -209,6 +209,33 @@ namespace JunX.NETStandard.SQLBuilder
             }
             return this;
         }
+        /// <summary>
+        /// Appends one or more column descriptors to the SELECT clause of the SQL command.
+        /// </summary>
+        /// <param name="Columns">
+        /// A variable-length array of column descriptors to include in the SELECT clause.
+        /// </param>
+        /// <returns>
+        /// The current <see cref="SelectCommand{T}"/> instance for fluent chaining.
+        /// </returns>
+        /// <remarks>
+        /// Builds a comma-separated SELECT clause from the provided columns.
+        /// </remarks>
+        public SelectCommand<T> Select(params T[] Columns)
+        {
+            if (Columns.Length == 0)
+                throw new ArgumentException("Invalid number of columns.");
+
+            foreach(T C in Columns)
+            {
+                if (_hasColumns)
+                    cmd.Append(", ");
+                else
+                    _hasColumns = true;
+                cmd.Append(C.ToString());
+            }
+            return this;
+        }
         #endregion
 
         #region Alias
@@ -253,6 +280,33 @@ namespace JunX.NETStandard.SQLBuilder
                 else
                     _hasColumns = true;
 
+                cmd.Append(SA.Column.ToString() + " AS '" + SA.Alias + "'");
+            }
+            return this;
+        }
+        /// <summary>
+        /// Appends one or more aliased column descriptors to the SELECT clause of the SQL command.
+        /// </summary>
+        /// <param name="SelectAs">
+        /// A variable-length array of <see cref="AliasMetadata{T}"/> objects, each containing a column and its alias.
+        /// </param>
+        /// <returns>
+        /// The current <see cref="SelectCommand{T}"/> instance for fluent chaining.
+        /// </returns>
+        /// <remarks>
+        /// Builds a comma-separated SELECT clause with SQL aliases using the format: Column AS 'Alias'.
+        /// </remarks>
+        public SelectCommand<T> SelectAs(params AliasMetadata<T>[] SelectAs)
+        {
+            if (SelectAs.Length < 1)
+                throw new ArgumentException("Invalid parameter length.");
+
+            foreach(AliasMetadata<T> SA in SelectAs)
+            {
+                if (_hasColumns)
+                    cmd.Append(", ");
+                else
+                    _hasColumns = true;
                 cmd.Append(SA.Column.ToString() + " AS '" + SA.Alias + "'");
             }
             return this;

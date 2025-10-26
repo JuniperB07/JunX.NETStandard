@@ -192,6 +192,37 @@ namespace JunX.NETStandard.SQLBuilder
             }
             return this;
         }
+        /// <summary>
+        /// Appends one or more column-value pairs to the SET clause of the SQL UPDATE command.
+        /// </summary>
+        /// <param name="UpdateData">
+        /// A variable-length array of <see cref="UpdateMetadata"/> objects, each containing a column name and its corresponding value.
+        /// </param>
+        /// <returns>
+        /// The current <see cref="UpdateCommand"/> instance for fluent chaining.
+        /// </returns>
+        /// <remarks>
+        /// Builds a comma-separated SET clause using the format: <c>Column=Value</c>.
+        /// </remarks>
+        public UpdateCommand Set(params UpdateMetadata[] UpdateData)
+        {
+            if (UpdateData.Length < 1)
+                throw new ArgumentException("Invalid parameter length.");
+
+            foreach (UpdateMetadata UD in UpdateData)
+            {
+                if (_hasSets)
+                    cmd.Append(", ");
+                else
+                {
+                    cmd.Append(" SET ");
+                    _hasSets = true;
+                }
+
+                cmd.Append(UD.Column + "=" + UD.Value);
+            }
+            return this;
+        }
         #endregion
 
         #region WHERE REGION
