@@ -102,5 +102,28 @@ namespace JunX.NETStandard.Utility
 
             return rValues;
         }
+
+        /// <summary>
+        /// Converts a string value to its corresponding enum of type <typeparamref name="T"/>.
+        /// </summary>
+        /// <param name="Value">The string representation of the enum value.</param>
+        /// <returns>The enum value of type <typeparamref name="T"/> that matches the input string.</returns>
+        /// <exception cref="ArgumentException">
+        /// Thrown when the input string does not match any defined enum value in <typeparamref name="T"/>.
+        /// </exception>
+        /// <remarks>
+        /// This method iterates through the list of valid enum names returned by <c>ToList()</c> and performs a strict equality check.
+        /// If a match is found, it parses and returns the corresponding enum value.
+        /// Otherwise, it throws an <see cref="ArgumentException"/> indicating the input is invalid.
+        /// Ensure that <c>ToList()</c> returns all valid enum names for type <typeparamref name="T"/>.
+        /// </remarks>
+        public static T ToEnum(string Value)
+        {
+            foreach (string enums in ToList())
+                if (Value == enums)
+                    return (T)Enum.Parse(typeof(T), enums);
+
+            throw new ArgumentException("Invalid parameter.");
+        }
     }
 }
