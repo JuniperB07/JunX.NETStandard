@@ -124,6 +124,31 @@ namespace JunX.NETStandard.EncryptionService
                 throw new InvalidTextParameterException("Decryption failed due to invalid key, IV, or corrupted data.", ex);
             }
         }
+
+        /// <summary>
+        /// Attempts to decrypt the specified value and returns a success flag.
+        /// </summary>
+        /// <param name="Value">
+        /// The encrypted string to be decrypted.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> if decryption succeeds without throwing an exception; otherwise, <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// Wraps the <c>Decrypt</c> method in a try-catch block to suppress exceptions and indicate success.
+        /// </remarks>
+        public bool TryDecrypt(string Value)
+        {
+            try
+            {
+                Decrypt(Value);
+                return true;
+            }
+            catch(Exception e)
+            {
+                return false;
+            }
+        }
     }
 
     /// <summary>

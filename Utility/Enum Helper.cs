@@ -125,5 +125,60 @@ namespace JunX.NETStandard.Utility
 
             throw new ArgumentException("Invalid parameter.");
         }
+
+        /// <summary>
+        /// Attempts to parse a string into an enumeration value of type <typeparamref name="T"/>, with optional support for readable formats and delimiters.
+        /// </summary>
+        /// <typeparam name="T">The target enumeration type to parse into.</typeparam>
+        /// <param name="Value">The input string representing the enumeration value or readable format.</param>
+        /// <param name="EnumValue">
+        /// When this method returns, contains the parsed enumeration value if successful; otherwise, the default value of <typeparamref name="T"/>.
+        /// </param>
+        /// <param name="IsReadableValue">
+        /// Indicates whether the input string uses a human-readable format (e.g., "Read, Write, Execute") that requires delimiter-based parsing.
+        /// </param>
+        /// <param name="ReadableValueDelimiter">
+        /// The character used to separate readable values (e.g., comma, pipe). Ignored if <paramref name="IsReadableValue"/> is <c>false</c>.
+        /// </param>
+        /// <param name="EnumDelimiter">
+        /// The character used to separate enum values internally. Ignored if <paramref name="IsReadableValue"/> is <c>false</c>.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> if the input string was successfully parsed into a valid enumeration value; otherwise, <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// This method supports both raw enum string parsing and human-readable formats with custom delimiters.
+        /// Parsing is wrapped in a try-catch block to ensure safe failure handling without throwing exceptions.
+        /// If parsing fails, <paramref name="EnumValue"/> is assigned the default value of <typeparamref name="T"/>.
+        /// </remarks>
+        public static bool TryParse(string Value, out T EnumValue, bool IsReadableValue = false, char ReadableValueDelimiter = '\0', char EnumDelimiter = '\0')
+        {
+            if (IsReadableValue)
+            {
+                try
+                {
+                    EnumValue = GetEnumValue(Value, ReadableValueDelimiter, EnumDelimiter);
+                    return true;
+                }
+                catch
+                {
+                    EnumValue = default(T);
+                    return false;
+                }
+            }
+            else
+            {
+                try
+                {
+                    EnumValue = ToEnum(Value);
+                    return true;
+                }
+                catch
+                {
+                    EnumValue = default(T);
+                    return false;
+                }
+            }
+        }
     }
 }
