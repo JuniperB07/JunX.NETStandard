@@ -57,7 +57,7 @@ namespace JunX.NETStandard.MySQL
                 if (!string.IsNullOrWhiteSpace(Password))
                     CS.Append("password=" + Password + "; ");
 
-                CS.Append("sslmode=" + SSLMode.ToString() + "; ");
+                CS.Append("sslmode=" + SSLMode.ToString().ToLower() + "; ");
 
                 if(SSLMode == SSLModes.VerifyCA || SSLMode == SSLModes.VerifyFull)
                 {
