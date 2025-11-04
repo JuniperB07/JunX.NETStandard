@@ -12,7 +12,8 @@ namespace JunX.NETStandard.SQLBuilder
     /// It tracks internal state to ensure proper clause sequencing and syntax.
     /// Designed for scenarios requiring flexible, string-based query generation without relying on strongly typed schema.
     /// </remarks>
-    public class DeleteCommand
+    public class DeleteCommand :
+        IConditionable<WhereClause<DeleteCommand>>
     {
         StringBuilder cmd;
         bool _hasWhere;

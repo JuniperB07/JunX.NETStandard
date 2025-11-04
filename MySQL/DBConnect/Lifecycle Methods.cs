@@ -31,6 +31,7 @@ namespace JunX.NETStandard.MySQL
                     InternalVariables.Command.Connection = InternalVariables.Connection;
                     InternalVariables.Command.CommandType = CommandType.Text;
                     IsOpened = true;
+                    ConnectionOpened?.Invoke(this, EventArgs.Empty);
                 }
                 catch (Exception ex)
                 {
@@ -51,6 +52,7 @@ namespace JunX.NETStandard.MySQL
         public void CloseConnection()
         {
             InternalVariables.Connection.Close();
+            ConnectionClosed?.Invoke(this, EventArgs.Empty);
         }
         /// <summary>
         /// Closes the internal <see cref="MySqlDataReader"/> if it is currently open.
@@ -62,7 +64,10 @@ namespace JunX.NETStandard.MySQL
         public void CloseReader()
         {
             if (!InternalVariables.Reader.IsClosed)
+            {
                 InternalVariables.Reader.Close();
+                ReaderClosed?.Invoke(this, EventArgs.Empty);
+            }
         }
         /// <summary>
         /// Asynchronously disposes internal database-related resources and resets associated metadata.

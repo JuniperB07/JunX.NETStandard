@@ -18,7 +18,12 @@ namespace JunX.NETStandard.SQLBuilder
     /// It tracks internal state to manage comma placement, condition grouping, and clause sequencing across multiple enum-based sources.
     /// Intended for scenarios where joined table metadata is modeled via enums, enabling type-safe query composition and SDK-level abstraction.
     /// </remarks>
-    public class SelectCommand<T, J> 
+    public class SelectCommand<T, J> :
+        ISelectable<SelectCommand<T, J>, T, J>,
+        IAliasable<SelectCommand<T, J>, AliasMetadata<T>, AliasMetadata<J>>,
+        IConditionable<WhereClause<SelectCommand<T, J>, T, J>>,
+        IJoinable<SelectCommand<T, J>, T, J>,
+        IQuerySortable<SelectCommand<T, J>, T, J>
         where T : Enum 
         where J : Enum
     {

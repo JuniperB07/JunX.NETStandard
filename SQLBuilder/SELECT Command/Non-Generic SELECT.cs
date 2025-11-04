@@ -12,7 +12,11 @@ namespace JunX.NETStandard.SQLBuilder
     /// It tracks internal state to manage comma placement, condition grouping, and clause sequencing.
     /// Intended for scenarios where table and column names are provided as strings, enabling flexible query composition without enum constraints.
     /// </remarks>
-    public class SelectCommand
+    public class SelectCommand :
+        ISelectable<SelectCommand, string>,
+        IConditionable<WhereClause<SelectCommand>>,
+        IJoinable<SelectCommand>,
+        IQuerySortable<SelectCommand, string>
     {
         private StringBuilder cmd = new StringBuilder();
         private bool _hasColumns = false;
@@ -47,6 +51,24 @@ namespace JunX.NETStandard.SQLBuilder
         }
 
         #region Properties
+        /// <summary>
+        /// Gets the current <see cref="SelectCommand"/> instance after appending a wildcard selector to the command.
+        /// </summary>
+        /// <value>
+        /// The current <see cref="SelectCommand"/> instance with <c>*</c> appended to represent a SELECT ALL operation.
+        /// </value>
+        /// <remarks>
+        /// This property is used to generate a <c>SELECT *</c> clause in dynamic SQL builders or metadata-driven query pipelines.
+        /// It enables fluent chaining by returning the same <see cref="SelectCommand"/> instance after appending the wildcard.
+        /// </remarks>
+        public SelectCommand SelectAll
+        {
+            get
+            {
+                cmd.Append("*");
+                return this;
+            }
+        }
         /// <summary>
         /// Appends a DISTINCT clause to the SQL command to eliminate duplicate rows from the result set.
         /// </summary>

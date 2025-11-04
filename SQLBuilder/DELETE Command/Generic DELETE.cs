@@ -15,7 +15,9 @@ namespace JunX.NETStandard.SQLBuilder
     /// It supports fluent composition of conditional logic via <c>WHERE</c> clauses and grouped expressions.
     /// Designed for scenarios where compile-time enum mapping drives table targeting and clause safety.
     /// </remarks>
-    public class DeleteCommand<T> where T : Enum
+    public class DeleteCommand<T> : 
+        IConditionable<WhereClause<DeleteCommand<T>, T>>
+        where T : Enum
     {
         StringBuilder cmd;
         bool _hasWhere;

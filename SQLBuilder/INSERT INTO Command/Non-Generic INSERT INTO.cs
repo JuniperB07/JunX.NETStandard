@@ -12,7 +12,8 @@ namespace JunX.NETStandard.SQLBuilder
     /// It tracks internal state to manage clause sequencing, parentheses, and comma placement.
     /// Designed for scenarios where schema is not enum-bound, enabling flexible and runtime-driven query composition.
     /// </remarks>
-    public class InsertIntoCommand
+    public class InsertIntoCommand :
+        IInsertable<InsertIntoCommand, string>
     {
         StringBuilder cmd;
         bool _hasColumns;

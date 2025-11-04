@@ -6,7 +6,7 @@ using System.Text;
 
 namespace JunX.NETStandard.MySQL
 {
-    public partial class DBConnect
+    public partial class DBConnect : IExecutableReader, IExecutableAdapter, IExecutableDataSet, IExecutableQuery
     {
         /// <summary>
         /// Executes the current SQL <c>SELECT</c> command and stores the result set values in the internal collection.

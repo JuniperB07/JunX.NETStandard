@@ -6,7 +6,7 @@ using System.Text;
 
 namespace JunX.NETStandard.MySQL
 {
-    public partial class DBConnect
+    public partial class DBConnect : IValuesReadable
     {
         /// <summary>
         /// Gets the internal <see cref="MySqlConnection"/> instance used for database operations.
@@ -102,7 +102,19 @@ namespace JunX.NETStandard.MySQL
         /// This property provides access to the underlying connection string stored in <see cref="InternalVariables"/>.
         /// Updating this value affects how the internal connection is configured during initialization or opening.
         /// </remarks>
-        public string ConnectionString { get { return InternalVariables.ConnectionString; } set { InternalVariables.ConnectionString = value; } }
+        public string ConnectionString 
+        {
+            get => InternalVariables.ConnectionString; 
+            set 
+            { 
+                if(InternalVariables.ConnectionString != value)
+                {
+                    string oldValue = InternalVariables.ConnectionString;
+                    InternalVariables.ConnectionString = value;
+                    ConnectionStringChanged?.Invoke(this, new ConnectionStringChangedEventArgs<string>(oldValue, value));
+                }
+            } 
+        }
         /// <summary>
         /// Gets or sets the SQL command text used for database operations.
         /// </summary>
@@ -113,7 +125,19 @@ namespace JunX.NETStandard.MySQL
         /// This property provides access to the raw SQL statement stored in <c>InternalVariables.CommandText</c>.
         /// It is typically assigned before executing queries or commands against the database.
         /// </remarks>
-        public string CommandText { get { return InternalVariables.CommandText; } set { InternalVariables.CommandText = value; } }
+        public string CommandText 
+        {
+            get => InternalVariables.CommandText;
+            set 
+            { 
+                if(InternalVariables.CommandText != value)
+                {
+                    string oldVal = InternalVariables.CommandText;
+                    InternalVariables.CommandText = value;
+                    CommandTextChanged?.Invoke(this, new CommandTextChangedEventArgs<string>(oldVal, value)); ;
+                }
+            } 
+        }
         /// <summary>
         /// Gets or sets the current connection string metadata used for MySQL access.
         /// </summary>

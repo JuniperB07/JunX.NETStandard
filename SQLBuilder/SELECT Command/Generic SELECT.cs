@@ -15,7 +15,12 @@ namespace JunX.NETStandard.SQLBuilder
     /// It tracks internal state to manage comma placement, condition grouping, and clause sequencing.
     /// Intended for scenarios where enum-based metadata drives query composition, such as code-generated schemas or SDK-level abstractions.
     /// </remarks>
-    public class SelectCommand<T> where T: Enum
+    public class SelectCommand<T> :
+        ISelectable<SelectCommand<T>, T>,
+        IAliasable<SelectCommand<T>, AliasMetadata<T>>,
+        IConditionable<WhereClause<SelectCommand<T>, T>>,
+        IQuerySortable<SelectCommand<T>, T>
+        where T: Enum
     {
         internal StringBuilder cmd = new StringBuilder();
         private bool _hasColumns = false;
@@ -167,18 +172,14 @@ namespace JunX.NETStandard.SQLBuilder
         /// <remarks>
         /// This method builds the column list for the SQL select statement, inserting commas as needed.
         /// </remarks>
-        public SelectCommand<T> Select(T Column, bool IsFullyQualified = false)
+        public SelectCommand<T> Select(T Column)
         {
             if (_hasColumns)
                 cmd.Append(", ");
             else
                 _hasColumns = true;
 
-            if (IsFullyQualified)
-                cmd.Append(typeof(T).Name + "." + Column.ToString());
-            else
-                cmd.Append(Column.ToString());
-
+            cmd.Append(Column.ToString());
             return this;
         }
         /// <summary>

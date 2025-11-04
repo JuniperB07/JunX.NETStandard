@@ -15,7 +15,10 @@ namespace JunX.NETStandard.SQLBuilder
     /// It tracks internal state to manage clause sequencing, grouping, and connector placement.
     /// Designed for scenarios where schema is represented via enums, enabling type-safe and metadata-driven query composition.
     /// </remarks>
-    public class UpdateCommand<T> where T: Enum
+    public class UpdateCommand<T> :
+        IUpdateable<UpdateCommand<T>, UpdateMetadata<T>>,
+        IConditionable<WhereClause<UpdateCommand<T>, T>>
+        where T: Enum
     {
         StringBuilder cmd;
         bool _hasSets;

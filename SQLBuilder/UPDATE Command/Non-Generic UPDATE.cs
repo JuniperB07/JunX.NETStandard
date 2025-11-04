@@ -12,7 +12,9 @@ namespace JunX.NETStandard.SQLBuilder
     /// It tracks internal state for <c>SET</c> and <c>WHERE</c> clause composition, enabling safe and modular update logic.
     /// Intended for scenarios where column metadata is resolved at runtime rather than via enums.
     /// </remarks>
-    public class UpdateCommand
+    public class UpdateCommand :
+        IUpdateable<UpdateCommand, UpdateMetadata>,
+        IConditionable<WhereClause<UpdateCommand>>
     {
         StringBuilder cmd;
         bool _hasSets;
