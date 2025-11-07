@@ -140,6 +140,8 @@ namespace JunX.NETStandard.XML
         /// </exception>
         public void ChangeAddValue(string Key, string Value)
         {
+            string oldVal = ReadAdd(Key);
+
             XElement target = _doc
                 .Descendants("add")
                 .FirstOrDefault(x => x.Attribute("key").Value == Key);
@@ -148,6 +150,9 @@ namespace JunX.NETStandard.XML
             try
             {
                 _doc.Save(_configPath);
+
+                if (oldVal != Value)
+                    AddValueChanged?.Invoke(this, new XMLAddValueChangedEventArgs(Key, oldVal, Value));
             }
             catch(Exception e)
             {
