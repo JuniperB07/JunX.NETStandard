@@ -13,7 +13,7 @@ namespace JunX.NETStandard.XML
     /// This class supports both file-based and in-memory XML operations, typically targeting configuration structures with <c>&lt;add key="..." value="..." /&gt;</c> elements.
     /// Future extensions may include support for nested sections, attribute-based filtering, and schema validation.
     /// </remarks>
-    public class JunXML
+    public partial class JunXML : IXMLAccessible<JunXML>
     {
         private string _configPath;
         private XDocument _doc;
@@ -84,6 +84,7 @@ namespace JunX.NETStandard.XML
             try
             {
                 _doc = XDocument.Load(_configPath);
+                XMLLoad?.Invoke(this, EventArgs.Empty);
                 return this;
             }
             catch(Exception e)

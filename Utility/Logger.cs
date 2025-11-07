@@ -13,7 +13,7 @@ namespace JunX.NETStandard.Utility
     /// It supports checking for file existence, generating a header row, and appending timestamped log entries.
     /// Intended for use in .NET applications requiring lightweight, file-based logging.
     /// </remarks>
-    public class Logger
+    public class Logger : ILoggable
     {
         private string _logPath = "";
 
