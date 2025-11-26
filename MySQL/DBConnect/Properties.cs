@@ -91,6 +91,7 @@ namespace JunX.NETStandard.MySQL
                 return InternalVariables.Values; 
             } 
         }
+        public ColumnValueMap Results => _columnValues;
 
         /// <summary>
         /// Gets or sets the internal MySQL connection string used for database operations.

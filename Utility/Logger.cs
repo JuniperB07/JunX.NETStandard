@@ -71,7 +71,14 @@ namespace JunX.NETStandard.Utility
             log.Append(Category + ",");
             log.Append(Details);
 
-            File.AppendAllText(_logPath, log.ToString() + Environment.NewLine, Encoding.UTF8);
+            try
+            {
+                File.AppendAllText(_logPath, log.ToString() + Environment.NewLine, Encoding.UTF8);
+            }
+            catch
+            {
+                return;
+            }
         }
     }
 }

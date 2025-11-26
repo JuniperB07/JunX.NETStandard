@@ -13,7 +13,6 @@ namespace JunX.NETStandard.SQLBuilder
     /// Intended for scenarios where table and column names are provided as strings, enabling flexible query composition without enum constraints.
     /// </remarks>
     public class SelectCommand :
-        ISelectable<SelectCommand, string>,
         IConditionable<WhereClause<SelectCommand>>,
         IJoinable<SelectCommand>,
         IQuerySortable<SelectCommand, string>

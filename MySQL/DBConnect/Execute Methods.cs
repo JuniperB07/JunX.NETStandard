@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace JunX.NETStandard.MySQL
@@ -35,12 +36,21 @@ namespace JunX.NETStandard.MySQL
                 InternalVariables.Reader = InternalVariables.Command.ExecuteReader();
 
                 InternalVariables.Values.Clear();
+                _columnValues.Clear();
                 if (InternalVariables.Reader.HasRows)
                 {
                     while (InternalVariables.Reader.Read())
                     {
                         for (int i = 0; i < InternalVariables.Reader.FieldCount; i++)
+                        {
                             InternalVariables.Values.Add(InternalVariables.Reader[i].ToString());
+                        }
+
+                        foreach(string colName in _selectedColumns)
+                        {
+                            string val = InternalVariables.Reader[colName]?.ToString() ?? "";
+                            _columnValues.Add(colName, val);
+                        }
                     }
                 }
             }
@@ -361,6 +371,14 @@ namespace JunX.NETStandard.MySQL
             {
                 throw new Exception("Unable to perform execution.\n\n" + e.Message.ToString());
             }
+        }
+
+
+        public void SetSelectedColumns(IEnumerable<Enum> Columns)
+        {
+            _selectedColumns.Clear();
+            foreach (var col in Columns)
+                _selectedColumns.Add(col.ToString());
         }
     }
 }

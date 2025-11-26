@@ -13,6 +13,9 @@ namespace JunX.NETStandard.MySQL
     /// </summary>
     public partial class DBConnect
     {
+        private readonly ColumnValueMap _columnValues = new ColumnValueMap();
+        private readonly List<string> _selectedColumns = new List<string>();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DBConnect"/> class and sets the connection string for internal database operations.
         /// </summary>

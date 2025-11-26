@@ -153,8 +153,8 @@ namespace JunX.NETStandard.SQLBuilder
     {
         T SelectAll { get; }
 
-        T Select(J Column);
-        T Select(IEnumerable<J> Columns);
+        T Select(J Column, bool IsFullyQualified);
+        T Select(IEnumerable<J> Columns, bool IsFullyQualified);
         T Select(params J[] Columns);
 
         T As(string Alias);

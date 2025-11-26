@@ -197,4 +197,89 @@ namespace JunX.NETStandard.SQLBuilder
             RawValue = SetValue;
         }
     }
+
+    /// <summary>
+    /// Represents metadata for a SQL <c>JOIN</c> clause between the primary table <typeparamref name="T"/> 
+    /// and a joined table <typeparamref name="J"/>.
+    /// </summary>
+    /// <typeparam name="T">
+    /// The enum type representing the primary table. Each enum member corresponds to a column in that table.
+    /// </typeparam>
+    /// <typeparam name="J">
+    /// The enum type representing the joined table. Each enum member corresponds to a column in that table.
+    /// </typeparam>
+    /// <remarks>
+    /// This struct encapsulates the join mode, the column from the primary table, and the column from the joined table. 
+    /// It is intended for use in fluent SQL builder operations to define join conditions.
+    /// </remarks>
+    public struct JoinMetadata<T, J>
+        where T: Enum
+        where J: Enum
+    {
+        /// <summary>
+        /// Gets or sets the type of SQL <c>JOIN</c> to apply, specified via <see cref="JoinModes"/>.
+        /// </summary>
+        /// <value>
+        /// A <see cref="JoinModes"/> value that determines how the primary table <typeparamref name="T"/> 
+        /// is joined with the secondary table <typeparamref name="J"/> (e.g., <c>INNER JOIN</c>, <c>LEFT JOIN</c>).
+        /// </value>
+        /// <remarks>
+        /// This property defines the join behavior used when constructing the SQL statement.
+        /// </remarks>
+        public JoinModes JoinMode { get; set; }
+        /// <summary>
+        /// Gets or sets the column from the primary table <typeparamref name="T"/> 
+        /// that participates in the SQL <c>JOIN</c> condition.
+        /// </summary>
+        /// <value>
+        /// An enum member of type <typeparamref name="T"/> representing the column 
+        /// on the left side of the join expression.
+        /// </value>
+        /// <remarks>
+        /// This property defines which column from the primary table is used when constructing 
+        /// the <c>ON</c> clause of the SQL <c>JOIN</c>.
+        /// </remarks>
+        public T Left { get; set; }
+        /// <summary>
+        /// Gets or sets the column from the joined table <typeparamref name="J"/> 
+        /// that participates in the SQL <c>JOIN</c> condition.
+        /// </summary>
+        /// <value>
+        /// An enum member of type <typeparamref name="J"/> representing the column 
+        /// on the right side of the join expression.
+        /// </value>
+        /// <remarks>
+        /// This property defines which column from the joined table is used when constructing 
+        /// the <c>ON</c> clause of the SQL <c>JOIN</c>.
+        /// </remarks>
+        public J Right { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JoinMetadata{T, J}"/> struct 
+        /// with the specified join mode and column references.
+        /// </summary>
+        /// <param name="SetJoinMode">
+        /// A <see cref="JoinModes"/> value that defines the type of SQL <c>JOIN</c> to apply 
+        /// (e.g., <c>INNER JOIN</c>, <c>LEFT JOIN</c>).
+        /// </param>
+        /// <param name="SetLeft">
+        /// An enum member of type <typeparamref name="T"/> representing the column 
+        /// from the primary table used in the join condition.
+        /// </param>
+        /// <param name="SetRight">
+        /// An enum member of type <typeparamref name="J"/> representing the column 
+        /// from the joined table used in the join condition.
+        /// </param>
+        /// <remarks>
+        /// This constructor sets the <see cref="JoinMode"/>, <see cref="Left"/>, and <see cref="Right"/> 
+        /// properties to define a fully qualified SQL <c>JOIN</c> clause between the primary 
+        /// and joined tables.
+        /// </remarks>
+        public JoinMetadata(JoinModes SetJoinMode, T SetLeft, J SetRight)
+        {
+            JoinMode = SetJoinMode;
+            Left = SetLeft;
+            Right = SetRight;
+        }
+    }
 }

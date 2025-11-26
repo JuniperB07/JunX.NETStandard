@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using JunX.NETStandard.Utility;
 
 namespace JunX.NETStandard.SQLBuilder
 {
@@ -25,6 +26,7 @@ namespace JunX.NETStandard.SQLBuilder
         internal StringBuilder cmd = new StringBuilder();
         private bool _hasColumns = false;
         private bool _hasWhere = false;
+        private readonly List<T> _columns = new List<T>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SelectCommand{T}"/> class and begins composing an SQL <c>SELECT</c> statement.
@@ -38,6 +40,7 @@ namespace JunX.NETStandard.SQLBuilder
             cmd.Append("SELECT ");
             _hasColumns = false;
             _hasWhere = false;
+            _columns = new List<T>();
         }
         /// <summary>
         /// Returns the composed SQL <c>SELECT</c> statement as a complete string.
@@ -79,6 +82,12 @@ namespace JunX.NETStandard.SQLBuilder
         {
             get
             {
+                foreach(string sCol in EnumHelper<T>.ToList())
+                {
+                    if (sCol != typeof(T).Name)
+                        _columns.Add(EnumHelper<T>.ToEnum(sCol));
+                }
+
                 _hasColumns = true;
                 cmd.Append("*");
                 return this;
@@ -100,6 +109,8 @@ namespace JunX.NETStandard.SQLBuilder
                 return this;
             }
         }
+
+        public IReadOnlyList<T> SelectedColumns => _columns.AsReadOnly();
         /*
         /// <summary>
         /// Appends a <c>WHERE</c> clause to the SQL <c>SELECT</c> statement, initiating conditional filtering.
@@ -172,14 +183,20 @@ namespace JunX.NETStandard.SQLBuilder
         /// <remarks>
         /// This method builds the column list for the SQL select statement, inserting commas as needed.
         /// </remarks>
-        public SelectCommand<T> Select(T Column)
+        public SelectCommand<T> Select(T Column, bool IsFullyQualified = false)
         {
             if (_hasColumns)
                 cmd.Append(", ");
             else
                 _hasColumns = true;
 
-            cmd.Append(Column.ToString());
+            _columns.Add(Column);
+
+            if (IsFullyQualified)
+                cmd.Append($"{typeof(T).Name}.{Column.ToString()}");
+            else
+                cmd.Append(Column.ToString());
+
             return this;
         }
         /// <summary>
@@ -197,7 +214,7 @@ namespace JunX.NETStandard.SQLBuilder
         /// <remarks>
         /// This method builds the column list for the SQL select statement, inserting commas as needed.
         /// </remarks>
-        public SelectCommand<T> Select(IEnumerable<T> Columns)
+        public SelectCommand<T> Select(IEnumerable<T> Columns, bool IsFullyQualified = false)
         {
             foreach (T C in Columns)
             {
@@ -206,7 +223,12 @@ namespace JunX.NETStandard.SQLBuilder
                 else
                     _hasColumns = true;
 
-                cmd.Append(C.ToString());
+                _columns.Add(C);
+
+                if (IsFullyQualified)
+                    cmd.Append($"{typeof(T).Name}.{C.ToString()}");
+                else
+                    cmd.Append(C.ToString());
             }
             return this;
         }
@@ -233,7 +255,107 @@ namespace JunX.NETStandard.SQLBuilder
                     cmd.Append(", ");
                 else
                     _hasColumns = true;
+
+                _columns.Add(C);
+
                 cmd.Append(C.ToString());
+            }
+            return this;
+        }
+        /// <summary>
+        /// Appends a column from the specified joined table <typeparamref name="J"/> 
+        /// to the SQL <c>SELECT</c> statement.
+        /// </summary>
+        /// <typeparam name="J">
+        /// The enum type representing the joined table whose column is being selected.
+        /// Each enum member corresponds to a column in that table.
+        /// </typeparam>
+        /// <param name="Column">
+        /// The enum member representing the column to include in the <c>SELECT</c> clause.
+        /// </param>
+        /// <returns>
+        /// The current <see cref="SelectCommand{T}"/> instance, enabling fluent chaining of 
+        /// additional builder methods.
+        /// </returns>
+        /// <remarks>
+        /// This method ensures proper comma separation when multiple columns are selected. 
+        /// The generated SQL will include a fully qualified column reference in the form 
+        /// <c>TableName.ColumnName</c>, where <c>TableName</c> is derived from the enum type name.
+        /// </remarks>
+        public SelectCommand<T> Select<J>(J Column) where J: Enum
+        {
+            if (_hasColumns)
+                cmd.Append(", ");
+            else
+                _hasColumns = true;
+
+            cmd.Append($"{typeof(J).Name}.{Column.ToString()}");
+            return this;
+        }
+        /// <summary>
+        /// Appends multiple columns from the specified joined table <typeparamref name="J"/> 
+        /// to the SQL <c>SELECT</c> statement.
+        /// </summary>
+        /// <typeparam name="J">
+        /// The enum type representing the joined table whose columns are being selected.
+        /// Each enum member corresponds to a column in that table.
+        /// </typeparam>
+        /// <param name="Columns">
+        /// A sequence of enum members representing the columns to include in the <c>SELECT</c> clause.
+        /// </param>
+        /// <returns>
+        /// The current <see cref="SelectCommand{T}"/> instance, enabling fluent chaining of 
+        /// additional builder methods.
+        /// </returns>
+        /// <remarks>
+        /// This method ensures proper comma separation when multiple columns are selected. 
+        /// Each column is appended as a fully qualified reference in the form 
+        /// <c>TableName.ColumnName</c>, where <c>TableName</c> is derived from the enum type name.
+        /// </remarks>
+        public SelectCommand<T> Select<J>(IEnumerable<J> Columns) where J: Enum
+        {
+            foreach(J C in Columns)
+            {
+                if (_hasColumns)
+                    cmd.Append(", ");
+                else
+                    _hasColumns = true;
+
+                cmd.Append($"{typeof(J).Name}.{C.ToString()}");
+            }
+            return this;
+        }
+        /// <summary>
+        /// Appends one or more columns from the specified joined table <typeparamref name="J"/> 
+        /// to the SQL <c>SELECT</c> statement.
+        /// </summary>
+        /// <typeparam name="J">
+        /// The enum type representing the joined table whose columns are being selected.
+        /// Each enum member corresponds to a column in that table.
+        /// </typeparam>
+        /// <param name="Columns">
+        /// A parameter array of enum members representing the columns to include in the <c>SELECT</c> clause.
+        /// </param>
+        /// <returns>
+        /// The current <see cref="SelectCommand{T}"/> instance, enabling fluent chaining of 
+        /// additional builder methods.
+        /// </returns>
+        /// <remarks>
+        /// This overload allows specifying multiple columns in a single call using the <c>params</c> keyword. 
+        /// Each column is appended as a fully qualified reference in the form 
+        /// <c>TableName.ColumnName</c>, where <c>TableName</c> is derived from the enum type name. 
+        /// Proper comma separation is automatically applied between multiple columns.
+        /// </remarks>
+        public SelectCommand<T> Select<J>(params J[] Columns) where J: Enum
+        {
+            foreach (J C in Columns)
+            {
+                if (_hasColumns)
+                    cmd.Append(", ");
+                else
+                    _hasColumns = true;
+
+                cmd.Append($"{typeof(J).Name}.{C.ToString()}");
             }
             return this;
         }
@@ -281,6 +403,8 @@ namespace JunX.NETStandard.SQLBuilder
                 else
                     _hasColumns = true;
 
+                _columns.Add(SA.Column);
+
                 cmd.Append(SA.Column.ToString() + " AS '" + SA.Alias + "'");
             }
             return this;
@@ -308,7 +432,79 @@ namespace JunX.NETStandard.SQLBuilder
                     cmd.Append(", ");
                 else
                     _hasColumns = true;
+
+                _columns.Add(SA.Column);
+
                 cmd.Append(SA.Column.ToString() + " AS '" + SA.Alias + "'");
+            }
+            return this;
+        }
+        /// <summary>
+        /// Appends one or more aliased columns from the specified joined table <typeparamref name="J"/> 
+        /// to the SQL <c>SELECT</c> statement.
+        /// </summary>
+        /// <typeparam name="J">
+        /// The enum type representing the joined table whose columns are being selected.
+        /// Each enum member corresponds to a column in that table.
+        /// </typeparam>
+        /// <param name="SelectAs">
+        /// A sequence of <see cref="AliasMetadata{J}"/> objects, each containing a column 
+        /// (represented by an enum member) and its alias to be applied in the <c>SELECT</c> clause.
+        /// </param>
+        /// <returns>
+        /// The current <see cref="SelectCommand{T}"/> instance, enabling fluent chaining of 
+        /// additional builder methods.
+        /// </returns>
+        /// <remarks>
+        /// This method ensures proper comma separation when multiple aliased columns are selected. 
+        /// Each column is appended as a fully qualified reference in the form 
+        /// <c>TableName.ColumnName AS 'Alias'</c>, where <c>TableName</c> is derived from the enum type name.
+        /// </remarks>
+        public SelectCommand<T> SelectAs<J>(IEnumerable<AliasMetadata<J>> SelectAs) where J: Enum
+        {
+            foreach(AliasMetadata<J> SA in SelectAs)
+            {
+                if (_hasColumns)
+                    cmd.Append(", ");
+                else
+                    _hasColumns = true;
+
+                cmd.Append($"{typeof(J).Name}.{SA.Column.ToString()} AS '{SA.Alias}'");
+            }
+            return this;
+        }
+        /// <summary>
+        /// Appends one or more aliased columns from the specified joined table <typeparamref name="J"/> 
+        /// to the SQL <c>SELECT</c> statement.
+        /// </summary>
+        /// <typeparam name="J">
+        /// The enum type representing the joined table whose columns are being selected.
+        /// Each enum member corresponds to a column in that table.
+        /// </typeparam>
+        /// <param name="SelectAs">
+        /// A parameter array of <see cref="AliasMetadata{J}"/> objects, each containing a column 
+        /// (represented by an enum member) and its alias to be applied in the <c>SELECT</c> clause.
+        /// </param>
+        /// <returns>
+        /// The current <see cref="SelectCommand{T}"/> instance, enabling fluent chaining of 
+        /// additional builder methods.
+        /// </returns>
+        /// <remarks>
+        /// This overload allows specifying multiple aliased columns in a single call using the <c>params</c> keyword. 
+        /// Each column is appended as a fully qualified reference in the form 
+        /// <c>TableName.ColumnName AS 'Alias'</c>, where <c>TableName</c> is derived from the enum type name. 
+        /// Proper comma separation is automatically applied between multiple aliased columns.
+        /// </remarks>
+        public SelectCommand<T> SelectAs<J>(params AliasMetadata<J>[] SelectAs) where J: Enum
+        {
+            foreach (AliasMetadata<J> SA in SelectAs)
+            {
+                if (_hasColumns)
+                    cmd.Append(", ");
+                else
+                    _hasColumns = true;
+
+                cmd.Append($"{typeof(J).Name}.{SA.Column.ToString()} AS '{SA.Alias}'");
             }
             return this;
         }
@@ -378,6 +574,41 @@ namespace JunX.NETStandard.SQLBuilder
         */
         #endregion
 
+        #region Dynamic Join
+        /// <summary>
+        /// Appends a <c>JOIN</c> clause to the SQL <c>SELECT</c> statement, 
+        /// joining the primary table <typeparamref name="T"/> with the specified table <typeparamref name="J"/>.
+        /// </summary>
+        /// <typeparam name="J">
+        /// The enum type representing the joined table. Each enum member corresponds to a column in that table.
+        /// </typeparam>
+        /// <param name="JoinMode">
+        /// The type of join to perform, specified via <see cref="JoinModes"/> (e.g., <c>INNER JOIN</c>, <c>LEFT JOIN</c>).
+        /// </param>
+        /// <param name="Left">
+        /// The enum member representing the column from the primary table <typeparamref name="T"/> 
+        /// to be used in the join condition.
+        /// </param>
+        /// <param name="Right">
+        /// The enum member representing the column from the joined table <typeparamref name="J"/> 
+        /// to be used in the join condition.
+        /// </param>
+        /// <returns>
+        /// The current <see cref="SelectCommand{T}"/> instance, enabling fluent chaining of additional builder methods.
+        /// </returns>
+        /// <remarks>
+        /// This method appends a fully qualified <c>JOIN</c> clause in the form 
+        /// <c>[JoinMode] [JoinedTable] ON [PrimaryTable].[LeftColumn] = [JoinedTable].[RightColumn]</c>. 
+        /// The <paramref name="JoinMode"/> value is converted to its SQL keyword representation by replacing underscores with spaces.
+        /// </remarks>
+        public SelectCommand<T> Join<J>(JoinModes JoinMode, T Left, J Right) where J: Enum
+        {
+            cmd.Append($" {JoinMode.ToString().Replace('_', ' ')} {typeof(J).Name}");
+            cmd.Append($" ON {typeof(T).Name}.{Left.ToString()} = {typeof(J).Name}.{Right.ToString()}");
+            return this;
+        }
+        #endregion
+
         #region Order By
         /// <summary>
         /// Appends an <c>ORDER BY</c> clause to the SQL query using the specified column and sort direction.
@@ -399,6 +630,34 @@ namespace JunX.NETStandard.SQLBuilder
         public SelectCommand<T> OrderBy(T OrderBy, OrderByModes OrderMode)
         {
             cmd.Append(" ORDER BY " + OrderBy.ToString() + " " + OrderMode.ToString());
+            return this;
+        }
+        /// <summary>
+        /// Appends an <c>ORDER BY</c> clause to the SQL <c>SELECT</c> statement 
+        /// using a column from the specified joined table <typeparamref name="J"/>.
+        /// </summary>
+        /// <typeparam name="J">
+        /// The enum type representing the joined table whose column is being used for sorting.
+        /// Each enum member corresponds to a column in that table.
+        /// </typeparam>
+        /// <param name="OrderBy">
+        /// The enum member representing the column to sort by from the joined table.
+        /// </param>
+        /// <param name="OrderMode">
+        /// The sort direction to apply, specified via <see cref="OrderByModes"/> 
+        /// (e.g., <c>ASC</c>, <c>DESC</c>).
+        /// </param>
+        /// <returns>
+        /// The current <see cref="SelectCommand{T}"/> instance, enabling fluent chaining of 
+        /// additional builder methods.
+        /// </returns>
+        /// <remarks>
+        /// This method appends a fully qualified column and sort direction to the SQL <c>ORDER BY</c> clause. 
+        /// Intended for use when sorting results based on columns from joined tables.
+        /// </remarks>
+        public SelectCommand<T> OrderBy<J>(J OrderBy, OrderByModes OrderMode) where J: Enum
+        {
+            cmd.Append($" ORDER BY {typeof(J).Name}.{OrderBy.ToString()} {OrderMode.ToString()}");
             return this;
         }
         #endregion
