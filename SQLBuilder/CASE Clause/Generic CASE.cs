@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace JunX.NETStandard.SQLBuilder.CASE_Clause
+namespace JunX.NETStandard.SQLBuilder
 {
     /// <summary>
     /// Provides a fluent interface for composing SQL <c>CASE</c> clauses, including logical operators and grouping, for use within generic SQL builder commands.
