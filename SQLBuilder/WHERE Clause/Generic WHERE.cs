@@ -9,7 +9,10 @@ namespace JunX.NETStandard.SQLBuilder
     /// </summary>
     /// <typeparam name="TCommand">The parent SQL builder type that this clause is attached to, enabling fluent chaining back to the command.</typeparam>
     /// <typeparam name="T">An enum type representing the schema or column identifiers used in the conditional expressions.</typeparam>
-    public class WhereClause<TCommand, T>
+    public class WhereClause<TCommand, T>:
+        ISQLExists<WhereClause<TCommand, T>, T>,
+        ISQLBetween<WhereClause<TCommand, T>, T>,
+        ISQLAnyAll<WhereClause<TCommand, T>, T>
         where TCommand: class
         where T: Enum
     {
@@ -283,10 +286,10 @@ namespace JunX.NETStandard.SQLBuilder
         /// It does not escape or quote values, and assumes the caller provides valid SQL-compatible strings.
         /// If a <c>WHERE</c> clause already exists, this method may produce invalid SQL unless manually adjusted.
         /// </remarks>
-        public WhereClause<TCommand, T> WhereBetween(T Column, string Left, string Right)
+        public WhereClause<TCommand, T> WhereBetween(T Column, object Left, object Right)
         {
             _cmd.Append(" WHERE " + $"{typeof(T).Name}.{Column.ToString()}");
-            _cmd.Append(" BETWEEN " + Left + " AND " + Right);
+            _cmd.Append(" BETWEEN " + Left.ToString() + " AND " + Right.ToString());
             return this;
         }
         /// <summary>
@@ -337,10 +340,10 @@ namespace JunX.NETStandard.SQLBuilder
         /// It assumes the caller has already appended a <c>WHERE</c> or <c>AND</c> clause if needed.
         /// Values are inserted as-is, without quoting or escaping. Use with caution for strings or dates.
         /// </remarks>
-        public WhereClause<TCommand, T> Between(T Column, string Left, string Right)
+        public WhereClause<TCommand, T> Between(T Column, object Left, object Right)
         {
             _cmd.Append(" " + $"{typeof(T).Name}.{Column.ToString()}");
-            _cmd.Append(" BETWEEN " + Left + " AND " + Right);
+            _cmd.Append(" BETWEEN " + Left.ToString() + " AND " + Right.ToString());
             return this;
         }
         /// <summary>

@@ -23,7 +23,9 @@ namespace JunX.NETStandard.SQLBuilder
         IAliasable<SelectCommand<T>, AliasMetadata<T>>,
         IConditionable<WhereClause<SelectCommand<T>, T>>,
         IQuerySortable<SelectCommand<T>, T>,
-        IUnionable<SelectCommand<T>>
+        IUnionable<SelectCommand<T>>,
+        IGroupable<SelectCommand<T>, T>,
+        ISQLHaving<SelectCommand<T>>
         where T: Enum
     {
         internal StringBuilder cmd = new StringBuilder();

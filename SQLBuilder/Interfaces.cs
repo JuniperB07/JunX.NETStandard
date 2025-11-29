@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 
 namespace JunX.NETStandard.SQLBuilder
@@ -334,5 +335,119 @@ namespace JunX.NETStandard.SQLBuilder
         TClass Union<J>(SelectCommand<J> Query) where J : Enum;
         TClass UnionAll<J>(SelectCommand<J> Query) where J : Enum;
 
+    }
+
+    /// <summary>
+    /// Defines a contract for grouping operations in a query builder, allowing 
+    /// grouping by one or multiple columns.
+    /// </summary>
+    /// <typeparam name="TClass">
+    /// The type of the class implementing this interface. Must be a reference type.
+    /// </typeparam>
+    /// <typeparam name="T">
+    /// The type representing a column identifier, typically an enum mapping to table columns.
+    /// </typeparam>
+    /// <remarks>
+    /// Implementations of this interface provide methods to append <c>GROUP BY</c> clauses 
+    /// to a SQL command. The interface supports grouping by a single column or by multiple 
+    /// columns supplied as an <see cref="IEnumerable{T}"/>.
+    /// </remarks>
+    public interface IGroupable<TClass, T> where TClass: class
+    {
+        TClass GroupBy(T Col);
+        TClass GroupBy(IEnumerable<T> Cols);
+    }
+
+    /// <summary>
+    /// Defines a contract for adding <c>HAVING</c> clauses to a SQL query builder, 
+    /// enabling conditional filtering on grouped results.
+    /// </summary>
+    /// <typeparam name="TClass">
+    /// The type of the class implementing this interface. Must be a reference type.
+    /// </typeparam>
+    /// <remarks>
+    /// Implementations of this interface provide methods to append <c>HAVING</c> clauses 
+    /// to a SQL command. The interface supports both starting a <c>HAVING</c> clause 
+    /// and applying conditions with operators.
+    /// </remarks>
+    public interface ISQLHaving<TClass> where TClass: class
+    {
+        TClass Having { get; }
+        TClass HavingCondition(SQLOperator Op, object R);
+    }
+
+    /// <summary>
+    /// Defines a contract for adding <c>EXISTS</c> and <c>WHERE EXISTS</c> clauses 
+    /// to a SQL query builder, enabling conditional checks against subqueries.
+    /// </summary>
+    /// <typeparam name="TClass">
+    /// The type of the class implementing this interface. Must be a reference type.
+    /// </typeparam>
+    /// <typeparam name="T">
+    /// The enum type representing the table columns used in the subquery.
+    /// </typeparam>
+    /// <remarks>
+    /// Implementations of this interface provide methods to append <c>EXISTS</c> 
+    /// and <c>WHERE EXISTS</c> clauses to a SQL command. These clauses allow 
+    /// filtering or validating rows based on the existence of records returned 
+    /// by a subquery.
+    /// </remarks>
+    public interface ISQLExists<TClass, T> 
+        where TClass: class
+        where T: Enum
+    {
+        TClass WhereExists(SelectCommand<T> TestQry);
+        TClass Exists(SelectCommand<T> TestQry);
+    }
+
+    /// <summary>
+    /// Defines a contract for adding <c>BETWEEN</c> clauses to a SQL query builder, 
+    /// enabling range‑based filtering on column values.
+    /// </summary>
+    /// <typeparam name="TClass">
+    /// The type of the class implementing this interface. Must be a reference type.
+    /// </typeparam>
+    /// <typeparam name="T">
+    /// The enum type representing the table columns that can be used in the 
+    /// <c>BETWEEN</c> condition.
+    /// </typeparam>
+    /// <remarks>
+    /// Implementations of this interface provide methods to append <c>BETWEEN</c> 
+    /// and <c>WHERE BETWEEN</c> clauses to a SQL command. These clauses allow 
+    /// filtering rows where a column value falls within a specified range.
+    /// </remarks>
+    public interface ISQLBetween<TClass, T>
+        where TClass: class
+        where T: Enum
+    {
+        TClass WhereBetween(T Col, object L, object R);
+        TClass Between(T Col, object L, object R);
+    }
+
+    /// <summary>
+    /// Defines a contract for adding <c>ANY</c> and <c>ALL</c> clauses to a SQL query builder, 
+    /// enabling comparisons of a column against the results of a subquery.
+    /// </summary>
+    /// <typeparam name="TClass">
+    /// The type of the class implementing this interface. Must be a reference type.
+    /// </typeparam>
+    /// <typeparam name="T">
+    /// The enum type representing the table columns that can be used in the 
+    /// <c>ANY</c> or <c>ALL</c> conditions.
+    /// </typeparam>
+    /// <remarks>
+    /// Implementations of this interface provide methods to append <c>WHERE ANY</c>, 
+    /// <c>ANY</c>, <c>WHERE ALL</c>, and <c>ALL</c> clauses to a SQL command. 
+    /// These clauses allow filtering rows by checking whether a column value 
+    /// satisfies a comparison against one or all values returned by a subquery.
+    /// </remarks>
+    public interface ISQLAnyAll<TClass, T>
+        where TClass: class
+        where T: Enum
+    {
+        TClass WhereAny(T Col, SQLOperator Op, SelectCommand<T> Subq);
+        TClass Any(T Col, SQLOperator Op, SelectCommand<T> Subq);
+        TClass WhereAll(T Col, SQLOperator Op, SelectCommand<T> Subq);
+        TClass All(T Col, SQLOperator Op, SelectCommand<T> Subq);
     }
 }
