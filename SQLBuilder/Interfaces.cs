@@ -155,7 +155,7 @@ namespace JunX.NETStandard.SQLBuilder
 
         T Select(J Column, bool IsFullyQualified);
         T Select(IEnumerable<J> Columns, bool IsFullyQualified);
-        T Select(params J[] Columns);
+        T Selects(params J[] Columns);
 
         T As(string Alias);
     }
@@ -316,5 +316,23 @@ namespace JunX.NETStandard.SQLBuilder
         TClass Set(TCarrier UpdateData);
         TClass Set(IEnumerable<TCarrier> UpdateData);
         TClass Set(params TCarrier[] UpdateData);
+    }
+
+    /// <summary>
+    /// Defines a contract for SQL query builders that support combining results 
+    /// from multiple queries using <c>UNION</c> and <c>UNION ALL</c>.
+    /// </summary>
+    /// <typeparam name="TClass">
+    /// The type returned by the union operations, typically the fluent query builder instance.
+    /// </typeparam>
+    /// <remarks>
+    /// Implementations of this interface provide methods to merge query results 
+    /// either with distinct rows (<c>UNION</c>) or with duplicates preserved (<c>UNION ALL</c>).
+    /// </remarks>
+    public interface IUnionable<TClass>
+    {
+        TClass Union<J>(SelectCommand<J> Query) where J : Enum;
+        TClass UnionAll<J>(SelectCommand<J> Query) where J : Enum;
+
     }
 }
