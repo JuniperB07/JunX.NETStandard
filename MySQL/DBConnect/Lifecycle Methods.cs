@@ -103,6 +103,8 @@ namespace JunX.NETStandard.MySQL
             InternalVariables.ConnectionString = null;
             InternalVariables.CommandText = null;
             InternalVariables.Values = null;
+
+            Disposed?.Invoke(this, EventArgs.Empty);
         }
         /// <summary>
         /// Resets the internal MySQL connection by closing it if open and reopening it.

@@ -53,6 +53,7 @@ namespace JunX.NETStandard.MySQL
                         }
                     }
                 }
+                ReaderExecuted?.Invoke(this, new ReaderExecutedEventArgs(CommandText, InternalVariables.Reader.HasRows));
             }
             catch (Exception e)
             {
@@ -99,6 +100,7 @@ namespace JunX.NETStandard.MySQL
                             InternalVariables.Values.Add(InternalVariables.Reader[i].ToString());
                     }
                 }
+                ReaderExecuted?.Invoke(this, new ReaderExecutedEventArgs(CommandText, InternalVariables.Reader.HasRows));
             }
             catch (Exception e)
             {
@@ -146,6 +148,7 @@ namespace JunX.NETStandard.MySQL
                             InternalVariables.Values.Add(InternalVariables.Reader[i].ToString());
                     }
                 }
+                ReaderExecuted?.Invoke(this, new ReaderExecutedEventArgs(CommandText, InternalVariables.Reader.HasRows));
             }
             catch (Exception e)
             {
@@ -170,6 +173,7 @@ namespace JunX.NETStandard.MySQL
 
             InternalVariables.Adapter = new MySqlDataAdapter();
             InternalVariables.Adapter.SelectCommand = new MySqlCommand(CommandText, Connection);
+            AdapterExecuted?.Invoke(this, new AdapterExecutedEventArgs(CommandText));
         }
         /// <summary>
         /// Initializes the internal <see cref="MySqlDataAdapter"/> with a parameterized <c>SELECT</c> command for data operations.
@@ -196,6 +200,7 @@ namespace JunX.NETStandard.MySQL
             InternalVariables.Command.Parameters.Clear();
             InternalVariables.Command.Parameters.AddWithValue(Parameter.ParameterName, Parameter.Value);
             InternalVariables.Adapter.SelectCommand = InternalVariables.Command;
+            AdapterExecuted?.Invoke(this, new AdapterExecutedEventArgs(CommandText));
         }
         /// <summary>
         /// Initializes the internal <see cref="MySqlDataAdapter"/> with a parameterized <c>SELECT</c> command for data operations.
@@ -225,6 +230,7 @@ namespace JunX.NETStandard.MySQL
                 InternalVariables.Command.Parameters.AddWithValue(P.ParameterName, P.Value);
 
             InternalVariables.Adapter.SelectCommand = InternalVariables.Command;
+            AdapterExecuted?.Invoke(this, new AdapterExecutedEventArgs(CommandText));
         }
 
         /// <summary>
@@ -243,6 +249,7 @@ namespace JunX.NETStandard.MySQL
             InternalVariables.Dataset = new DataSet();
             ExecuteAdapter();
             InternalVariables.Adapter.Fill(InternalVariables.Dataset);
+            DataSetExecuted?.Invoke(this, new DataSetExecutedEventArgs(CommandText, InternalVariables.Dataset));
         }
         /// <summary>
         /// Executes a parameterized SQL <c>SELECT</c> command and fills the internal <see cref="DataSet"/> with the result set.
@@ -263,6 +270,7 @@ namespace JunX.NETStandard.MySQL
             InternalVariables.Dataset = new DataSet();
             ExecuteAdapter(Parameter);
             InternalVariables.Adapter.Fill(InternalVariables.Dataset);
+            DataSetExecuted?.Invoke(this, new DataSetExecutedEventArgs(CommandText, InternalVariables.Dataset));
         }
         /// <summary>
         /// Executes a parameterized SQL <c>SELECT</c> command and fills the internal <see cref="DataSet"/> with the result set.
@@ -283,6 +291,7 @@ namespace JunX.NETStandard.MySQL
             InternalVariables.Dataset = new DataSet();
             ExecuteAdapter(Parameters);
             InternalVariables.Adapter.Fill(InternalVariables.Dataset);
+            DataSetExecuted?.Invoke(this, new DataSetExecutedEventArgs(CommandText, InternalVariables.Dataset));
         }
 
         /// <summary>
@@ -304,6 +313,7 @@ namespace JunX.NETStandard.MySQL
             try
             {
                 InternalVariables.Command.ExecuteNonQuery();
+                NonQueryExecuted?.Invoke(this, new NonQueryExecutedEventArgs(CommandText));
             }
             catch (Exception e)
             {
@@ -334,6 +344,7 @@ namespace JunX.NETStandard.MySQL
             try
             {
                 InternalVariables.Command.ExecuteNonQuery();
+                NonQueryExecuted?.Invoke(this, new NonQueryExecutedEventArgs(CommandText));
             }
             catch (Exception e)
             {
@@ -366,6 +377,7 @@ namespace JunX.NETStandard.MySQL
             try
             {
                 InternalVariables.Command.ExecuteNonQuery();
+                NonQueryExecuted?.Invoke(this, new NonQueryExecutedEventArgs(CommandText));
             }
             catch (Exception e)
             {

@@ -29,6 +29,7 @@ namespace JunX.NETStandard.MySQL
         {
             InternalVariables.InitializeAll();
             InternalVariables.ConnectionString = ConnString;
+            Initialized?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -47,6 +48,7 @@ namespace JunX.NETStandard.MySQL
             InternalVariables.Connection = Connection;
             InternalVariables.Command.Connection = InternalVariables.Connection;
             InternalVariables.Command.CommandType = CommandType.Text;
+            Initialized?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -59,6 +61,7 @@ namespace JunX.NETStandard.MySQL
             InternalVariables.InitializeAll();
             InternalVariables.ConnectionStringInformation = ConnectionStringInfo;
             InternalVariables.ConnectionString = InternalVariables.ConnectionStringInformation.ConnectionString;
+            Initialized?.Invoke(this, EventArgs.Empty);
         }
     }
 }

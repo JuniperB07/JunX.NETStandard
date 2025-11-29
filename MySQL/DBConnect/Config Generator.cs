@@ -63,7 +63,7 @@ namespace JunX.NETStandard.MySQL
                     writer.WriteEndElement();
                     writer.WriteEndDocument();
                 }
-
+                
             }
 
             /// <summary>

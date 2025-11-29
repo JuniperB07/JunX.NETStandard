@@ -88,6 +88,7 @@ namespace JunX.NETStandard.MySQL
             get 
             {
                 CloseReader();
+                ValuesRead?.Invoke(this, EventArgs.Empty);
                 return InternalVariables.Values; 
             } 
         }
