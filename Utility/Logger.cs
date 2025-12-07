@@ -82,12 +82,12 @@ namespace JunX.NETStandard.Utility
         /// The log entry is written in CSV format as <c>MM/dd/yyyy - HH:mm:ss,Category,Details</c>, followed by a newline.
         /// This method assumes the log file path has been initialized and is writable.
         /// </remarks>
-        public void AddLog(DateTime LogDateTime, string Category, string Details)
+        public void AddLog(DateTime LogDateTime, object Category, string Details)
         {
             StringBuilder log = new StringBuilder();
 
             log.Append(LogDateTime.ToString("MM/dd/yyyy - HH:mm:ss") + ",");
-            log.Append(Category + ",");
+            log.Append(Category.ToString() + ",");
             log.Append(Details);
 
             try
@@ -150,7 +150,7 @@ namespace JunX.NETStandard.Utility
         /// <see cref="LogAddedEventArgs"/>. It allows event subscribers to 
         /// filter, group, or analyze log entries based on their category.
         /// </remarks>
-        public string Category { get; }
+        public object Category { get; }
         /// <summary>
         /// Gets additional descriptive information associated with the log entry.
         /// </summary>
@@ -181,7 +181,7 @@ namespace JunX.NETStandard.Utility
         /// <param name="details">
         /// Additional descriptive information that supplements the main log message.
         /// </param>
-        public LogAddedEventArgs(string log, DateTime logDT, string category, string details)
+        public LogAddedEventArgs(string log, DateTime logDT, object category, string details)
         {
             Log = log;
             LogDT = logDT;

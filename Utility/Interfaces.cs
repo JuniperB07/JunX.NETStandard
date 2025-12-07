@@ -14,7 +14,7 @@ namespace JunX.NETStandard.Utility
     /// </remarks>
     public interface ILoggable
     {
-        void AddLog(DateTime LogDT, string Category, string Details);
+        void AddLog(DateTime LogDT, object Category, string Details);
         void CreateLogFile();
         bool LogFileExists();
     }

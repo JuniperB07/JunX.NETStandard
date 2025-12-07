@@ -54,7 +54,7 @@ namespace JunX.NETStandard.XML
         /// <remarks>
         /// This property is useful for tracking changes, auditing configuration updates, or validating XML modifications.
         /// </remarks>
-        public string OldValue { get; }
+        public object OldValue { get; }
         /// <summary>
         /// Gets the updated value of the XML attribute or element after the change occurred.
         /// </summary>
@@ -64,7 +64,7 @@ namespace JunX.NETStandard.XML
         /// <remarks>
         /// This property is useful for responding to configuration updates, validating changes, or logging XML modifications.
         /// </remarks>
-        public string NewValue { get; }
+        public object NewValue { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="XMLAddValueChangedEventArgs"/> class with the specified key and value change details.
@@ -81,7 +81,7 @@ namespace JunX.NETStandard.XML
         /// <remarks>
         /// This constructor captures the context of an XML value change, enabling event subscribers to respond with full awareness of what was modified.
         /// </remarks>
-        public XMLAddValueChangedEventArgs(string SetKey, string SetOldValue, string SetNewValue)
+        public XMLAddValueChangedEventArgs(string SetKey, object SetOldValue, object SetNewValue)
         {
             Key = SetKey;   
             OldValue = SetOldValue;

@@ -18,6 +18,6 @@ namespace JunX.NETStandard.XML
     {
         T Load();
         string ReadAdd(string Key);
-        void ChangeAddValue(string Key, string Value);
+        void ChangeAddValue(string Key, object Value);
     }
 }

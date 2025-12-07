@@ -138,9 +138,9 @@ namespace JunX.NETStandard.XML
         /// <exception cref="Exception">
         /// Thrown when the XML document cannot be saved due to I/O errors, access restrictions, or invalid path configuration.
         /// </exception>
-        public void ChangeAddValue(string Key, string Value)
+        public void ChangeAddValue(string Key, object Value)
         {
-            string oldVal = ReadAdd(Key);
+            object oldVal = ReadAdd(Key);
 
             XElement target = _doc
                 .Descendants("add")
