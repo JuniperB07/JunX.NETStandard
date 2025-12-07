@@ -17,9 +17,8 @@
   <li><strong>JunX.NetStandard.XML</strong> - Contains classes, and methods for reading and manipulating XML files and RDLC files.</li>
 </ul>
 <br/>
-<br/>
-<strong>NOTE FROM DEVELOPER</strong>
-<p align="justify">This library is a work-in-progress. Contents will be added and refined.</p><br/>
-<p align="justify">As I am a small-time developer, if you are going to use this library, please credit me. I would highly appreciate it.</p><br/>
-<p align="justify">If you have any comments or suggestions, please feel free to reach me out via my <a href="https://www.facebook.com/juniB07">Facebook</a>.</p><br/>
+<strong>FROM THE DEVELOPER</strong>
+<p align="justify">This library is a work-in-progress. Contents will be added and refined.</p>
+<p align="justify">As I am a small-time developer, if you are going to use this library, please credit me. I would highly appreciate it.</p>
+<p align="justify">If you have any comments or suggestions, please feel free to reach me out via my <a href="https://www.facebook.com/juniB07">Facebook</a>.</p>
 <p aligh="justify">Thank you! :)</p>
