@@ -170,7 +170,7 @@ namespace JunX.NETStandard.SQLBuilder
         /// This method begins the <c>VALUES</c> clause with a closing parenthesis from the column list, followed by <c>VALUES (</c>.
         /// Subsequent calls append comma-separated values. Each value is formatted safely using <c>Construct.SQLSafeValue</c>.
         /// </remarks>
-        public InsertIntoCommand Values(string Value, DataTypes DataType)
+        public InsertIntoCommand Values(object Value, DataTypes DataType)
         {
             if (_hasValues)
                 cmd.Append(", ");
@@ -179,7 +179,7 @@ namespace JunX.NETStandard.SQLBuilder
                 cmd.Append(") VALUES (");
                 _hasValues = true;
             }
-            cmd.Append(Methods.SQLSafeValue(Value, DataType));
+            cmd.Append(Methods.SQLSafeValue(Value.ToString(), DataType));
             return this;
         }
         /// <summary>

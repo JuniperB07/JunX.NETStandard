@@ -47,7 +47,7 @@ namespace JunX.NETStandard.SQLBuilder
     /// </remarks>
     public struct ValuesMetadata
     {
-        private string RawValue { get; set; }
+        private object RawValue { get; set; }
         private DataTypes DataType { get; set; }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace JunX.NETStandard.SQLBuilder
         /// This property delegates to <c>Methods.SQLSafeValue</c> to sanitize the raw input based on its type.
         /// Useful for dynamic query generation where values must be safely embedded without risking injection or formatting errors.
         /// </remarks>
-        public string Value { get { return Methods.SQLSafeValue(RawValue, DataType); } }
+        public string Value { get { return Methods.SQLSafeValue(RawValue.ToString(), DataType); } }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValuesMetadata"/> struct with a raw value and its associated data type.
@@ -74,7 +74,7 @@ namespace JunX.NETStandard.SQLBuilder
         /// <remarks>
         /// This constructor sets the internal fields used by the <see cref="Value"/> property to produce a SQL-safe output.
         /// </remarks>
-        public ValuesMetadata(string SetValue, DataTypes SetDataType)
+        public ValuesMetadata(object SetValue, DataTypes SetDataType)
         {
             RawValue = SetValue;
             DataType = SetDataType;
@@ -93,7 +93,7 @@ namespace JunX.NETStandard.SQLBuilder
     /// </remarks>
     public struct UpdateMetadata<T> where T: Enum
     {
-        private string RawValue { get; set; }
+        private object RawValue { get; set; }
         private DataTypes DataType { get; set; }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace JunX.NETStandard.SQLBuilder
         /// This property delegates to <c>Methods.SQLSafeValue</c> to sanitize the raw input based on its type,
         /// ensuring protection against injection and preserving correct formatting for numeric and non-numeric values.
         /// </remarks>
-        public string Value { get { return Methods.SQLSafeValue(RawValue, DataType); } }
+        public string Value { get { return Methods.SQLSafeValue(RawValue.ToString(), DataType); } }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateMetadata{T}"/> struct with a column, raw value, and associated data type.
@@ -133,7 +133,7 @@ namespace JunX.NETStandard.SQLBuilder
         /// <remarks>
         /// This constructor sets the internal metadata required to produce a SQL-safe update expression via the <see cref="Value"/> property.
         /// </remarks>
-        public UpdateMetadata(T SetColumn, string SetValue, DataTypes SetDataType)
+        public UpdateMetadata(T SetColumn, object SetValue, DataTypes SetDataType)
         {
             Column = SetColumn;
             DataType = SetDataType;
@@ -150,7 +150,7 @@ namespace JunX.NETStandard.SQLBuilder
     /// </remarks>
     public struct UpdateMetadata
     {
-        private string RawValue { get; set; }
+        private object RawValue { get; set; }
         private DataTypes DataType { get; set; }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace JunX.NETStandard.SQLBuilder
         /// This property delegates to <c>Methods.SQLSafeValue</c> to sanitize the raw input based on its type,
         /// ensuring protection against injection and preserving correct formatting for numeric and non-numeric values.
         /// </remarks>
-        public string Value { get { return Methods.SQLSafeValue(RawValue, DataType); } }
+        public string Value { get { return Methods.SQLSafeValue(RawValue.ToString(), DataType); } }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateMetadata"/> struct with a column name, raw value, and associated data type.
@@ -190,7 +190,7 @@ namespace JunX.NETStandard.SQLBuilder
         /// <remarks>
         /// This constructor sets the internal metadata required to produce a SQL-safe update expression via the <see cref="Value"/> property.
         /// </remarks>
-        public UpdateMetadata(string SetColumn, string SetValue, DataTypes SetDataType)
+        public UpdateMetadata(string SetColumn, object SetValue, DataTypes SetDataType)
         {
             Column = SetColumn;
             DataType = SetDataType;
@@ -280,6 +280,57 @@ namespace JunX.NETStandard.SQLBuilder
             JoinMode = SetJoinMode;
             Left = SetLeft;
             Right = SetRight;
+        }
+    }
+
+    /// <summary>
+    /// Represents metadata for a SQL condition, encapsulating raw data and its associated type.
+    /// </summary>
+    /// <remarks>
+    /// This struct provides a safe, type-aware representation of condition values used in SQL queries.
+    /// It ensures that raw data is stored along with its <see cref="DataTypes"/> classification
+    /// and exposes a processed value suitable for safe SQL usage.
+    /// </remarks>
+    public struct ConditionMetadata
+    {
+        private object RawData { get; set; }
+        private DataTypes DataType { get; set; }
+
+        /// <summary>
+        /// Gets the SQL-safe representation of the raw condition data.
+        /// </summary>
+        /// <value>
+        /// A <see cref="string"/> containing the processed value, formatted according to
+        /// the associated <see cref="DataTypes"/> classification, ensuring safe usage
+        /// in SQL queries.
+        /// </value>
+        /// <remarks>
+        /// This property applies <c>Methods.SQLSafeValue</c> to the raw data, converting
+        /// it into a properly escaped and type-aware string suitable for inclusion in
+        /// SQL statements.
+        /// </remarks>
+        public string Value => Methods.SQLSafeValue(RawData.ToString(), DataType);
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConditionMetadata"/> struct
+        /// with the specified raw value and its associated data type.
+        /// </summary>
+        /// <param name="Right">
+        /// The raw value to be stored and later converted into a SQL-safe representation.
+        /// </param>
+        /// <param name="SetDataType">
+        /// The <see cref="DataTypes"/> classification that defines how the raw value
+        /// should be interpreted and formatted for SQL usage.
+        /// </param>
+        /// <remarks>
+        /// This constructor ensures that both the raw data and its type are captured,
+        /// allowing the <see cref="Value"/> property to produce a safe, type-aware
+        /// SQL string.
+        /// </remarks>
+        public ConditionMetadata(object Right, DataTypes SetDataType)
+        {
+            RawData = Right;
+            DataType = SetDataType;
         }
     }
 }

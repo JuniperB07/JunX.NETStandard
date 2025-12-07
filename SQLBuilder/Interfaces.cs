@@ -105,7 +105,7 @@ namespace JunX.NETStandard.SQLBuilder
         /// This method is used to bind a single value to the most recently defined column or column set.
         /// It supports explicit type declaration for scenarios requiring precision, such as SQL generation, reporting pipelines, or metadata-driven inserts.
         /// </remarks>
-        T Values(string Value, DataTypes Type);
+        T Values(object Value, DataTypes Type);
         /// <summary>
         /// Specifies multiple values to be inserted using a collection of <see cref="ValuesMetadata"/> objects.
         /// </summary>

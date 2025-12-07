@@ -155,7 +155,7 @@ namespace JunX.NETStandard.SQLBuilder
         /// This method begins the <c>VALUES</c> clause if it hasn't already started, and appends the SQL-safe representation of the value.
         /// Use in combination with <c>Column(...)</c> to ensure column-value alignment.
         /// </remarks>
-        public InsertIntoCommand<T> Values(string Value, DataTypes DataType)
+        public InsertIntoCommand<T> Values(object Value, DataTypes DataType)
         {
             if (_hasValues)
                 cmd.Append(", ");
@@ -164,7 +164,7 @@ namespace JunX.NETStandard.SQLBuilder
                 cmd.Append(") VALUES (");
                 _hasValues = true;
             }
-            cmd.Append(Methods.SQLSafeValue(Value, DataType));
+            cmd.Append(Methods.SQLSafeValue(Value.ToString(), DataType));
             return this;
         }
         /// <summary>

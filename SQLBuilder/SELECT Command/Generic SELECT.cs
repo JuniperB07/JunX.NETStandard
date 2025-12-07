@@ -1364,6 +1364,33 @@ namespace JunX.NETStandard.SQLBuilder
             cmd.Append($" {Operator.ToSymbol()} {Right.ToString()}");
             return this;
         }
+        /// <summary>
+        /// Appends a HAVING clause condition to the SQL command using the specified operator
+        /// and right-hand side value.
+        /// </summary>
+        /// <param name="Operator">
+        /// The SQL operator (e.g., Equal, NotEqual, GreaterThan) used to compare the values
+        /// within the HAVING clause.
+        /// </param>
+        /// <param name="Right">
+        /// A <see cref="ConditionMetadata"/> instance representing the right-hand side value,
+        /// including its raw data and type-safe SQL representation.
+        /// </param>
+        /// <returns>
+        /// Returns the current <see cref="SelectCommand{T}"/> instance so that
+        /// additional HAVING conditions can be chained fluently.
+        /// </returns>
+        /// <remarks>
+        /// This method generates a HAVING condition in the form:
+        /// <c>Operator Value</c>
+        /// and appends it to the SQL command builder.
+        /// Typically used after aggregate functions (e.g., COUNT, SUM, AVG) to filter grouped results.
+        /// </remarks>
+        public SelectCommand<T> HavingCondition(SQLOperator Operator, ConditionMetadata Right)
+        {
+            cmd.Append($" {Operator.ToSymbol()} {Right.Value}");
+            return this;
+        }
         #endregion
     }
 }

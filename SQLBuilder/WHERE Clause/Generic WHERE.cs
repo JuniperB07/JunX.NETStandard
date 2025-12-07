@@ -54,10 +54,9 @@ namespace JunX.NETStandard.SQLBuilder
         /// <param name="Operator">The SQL operator used in the comparison (e.g., equals, greater than).</param>
         /// <param name="Right">The value to compare against, represented as a string.</param>
         /// <returns>The current <see cref="WhereClause{TCommand, T}"/> instance for fluent chaining.</returns>
-        public WhereClause<TCommand, T> Where(T Left, SQLOperator Operator, string Right)
+        public WhereClause<TCommand, T> Where(T Left, SQLOperator Operator, object Right)
         {
-            _cmd.Append(" WHERE ");
-            _cmd.Append($"{typeof(T).Name}.{Left.ToString()}" + Operator.ToSymbol() + Right);
+            _cmd.Append($" WHERE {typeof(T).Name}.{Left.ToString()} {Operator.ToSymbol()} {Right.ToString()}");
             return this;
         }
         /// <summary>
@@ -92,6 +91,65 @@ namespace JunX.NETStandard.SQLBuilder
             _cmd.Append($" WHERE {typeof(J).Name}.{Left.ToString()} {Operator.ToSymbol()} {Right.ToString()}");
             return this;
         }
+        /// <summary>
+        /// Appends a WHERE clause condition to the SQL command being built.
+        /// </summary>
+        /// <param name="Left">
+        /// The column or field on the left-hand side of the condition, represented by the generic type <typeparamref name="T"/>.
+        /// </param>
+        /// <param name="Operator">
+        /// The SQL operator (e.g., Equal, NotEqual, GreaterThan) used to compare the values.
+        /// </param>
+        /// <param name="Right">
+        /// A <see cref="ConditionMetadata"/> instance representing the right-hand side value,
+        /// including its raw data and type-safe SQL representation.
+        /// </param>
+        /// <returns>
+        /// Returns the current <see cref="WhereClause{TCommand, T}"/> instance so that
+        /// additional conditions can be chained fluently.
+        /// </returns>
+        /// <remarks>
+        /// This method generates a WHERE clause in the form:
+        /// <c>WHERE Table.Column Operator Value</c>
+        /// and appends it to the SQL command builder.
+        /// </remarks>
+        public WhereClause<TCommand, T> Where(T Left, SQLOperator Operator, ConditionMetadata Right)
+        {
+            _cmd.Append($" WHERE {typeof(T).Name}.{Left.ToString()} {Operator.ToSymbol()} {Right.Value}");
+            return this;
+        }
+        /// <summary>
+        /// Appends a WHERE clause condition to the SQL command being built,
+        /// using an enumerated type to represent the column or field.
+        /// </summary>
+        /// <typeparam name="J">
+        /// The enumeration type representing the column or field being compared.
+        /// Must be an <see cref="Enum"/>.
+        /// </typeparam>
+        /// <param name="Left">
+        /// The enum value indicating the left-hand side column or field of the condition.
+        /// </param>
+        /// <param name="Operator">
+        /// The SQL operator (e.g., Equal, NotEqual, GreaterThan) used to compare the values.
+        /// </param>
+        /// <param name="Right">
+        /// A <see cref="ConditionMetadata"/> instance representing the right-hand side value,
+        /// including its raw data and type-safe SQL representation.
+        /// </param>
+        /// <returns>
+        /// Returns the current <see cref="WhereClause{TCommand, T}"/> instance so that
+        /// additional conditions can be chained fluently.
+        /// </returns>
+        /// <remarks>
+        /// This method generates a WHERE clause in the form:
+        /// <c>WHERE Table.Column Operator Value</c>
+        /// and appends it to the SQL command builder.
+        /// </remarks>
+        public WhereClause<TCommand, T> Where<J>(J Left, SQLOperator Operator, ConditionMetadata Right) where J: Enum
+        {
+            _cmd.Append($" WHERE {typeof(J).Name}.{Left.ToString()} {Operator.ToSymbol()} {Right.Value}");
+            return this;
+        }
         #endregion
 
 
@@ -113,12 +171,104 @@ namespace JunX.NETStandard.SQLBuilder
         /// <param name="Operator">The SQL operator used in the comparison.</param>
         /// <param name="Right">The value to compare against, represented as a string.</param>
         /// <returns>The current <see cref="WhereClause&lt;TCommand, T&gt;"/> instance for fluent chaining.</returns>
-        public WhereClause<TCommand, T> StartGroup(T Left, SQLOperator Operator, string Right)
+        public WhereClause<TCommand, T> StartGroup(T Left, SQLOperator Operator, object Right)
         {
-            _cmd.Append(" (");
-            _cmd.Append(Left.ToString() + Operator.ToSymbol() + Right);
+            _cmd.Append($" ({typeof(T).Name}.{Left.ToString()} {Operator.ToSymbol()} {Right.ToString()}");
             return this;
         }
+        /// <summary>
+        /// Begins a grouped WHERE clause expression by appending an opening parenthesis
+        /// and the specified condition to the SQL command builder.
+        /// </summary>
+        /// <typeparam name="J">
+        /// The enumeration type representing the column or field being compared.
+        /// Must be an <see cref="Enum"/>.
+        /// </typeparam>
+        /// <param name="Left">
+        /// The enum value indicating the left-hand side column or field of the condition.
+        /// </param>
+        /// <param name="Operator">
+        /// The SQL operator (e.g., Equal, NotEqual, GreaterThan) used to compare the values.
+        /// </param>
+        /// <param name="Right">
+        /// The right-hand side value to compare against the column or field.
+        /// </param>
+        /// <returns>
+        /// Returns the current <see cref="WhereClause{TCommand, T}"/> instance so that
+        /// additional conditions can be chained fluently.
+        /// </returns>
+        /// <remarks>
+        /// This method appends a condition in the form:
+        /// <c>(Table.Column Operator Value</c>
+        /// to the SQL command being built. The closing parenthesis should be added later
+        /// when ending the group.
+        /// </remarks>
+        public WhereClause<TCommand, T> StartGroup<J>(J Left, SQLOperator Operator, object Right) where J: Enum
+        {
+            _cmd.Append($" ({typeof(J).Name}.{Left.ToString()} {Operator.ToSymbol()} {Right.ToString()}");
+            return this;
+        }
+        /// <summary>
+        /// Begins a grouped WHERE clause expression by appending an opening parenthesis
+        /// and the specified condition to the SQL command builder.
+        /// </summary>
+        /// <param name="Left">
+        /// The column or field on the left-hand side of the condition, represented by the generic type <typeparamref name="T"/>.
+        /// </param>
+        /// <param name="Operator">
+        /// The SQL operator (e.g., Equal, NotEqual, GreaterThan) used to compare the values.
+        /// </param>
+        /// <param name="Right">
+        /// A <see cref="ConditionMetadata"/> instance representing the right-hand side value,
+        /// including its raw data and type-safe SQL representation.
+        /// </param>
+        /// <returns>
+        /// Returns the current <see cref="WhereClause{TCommand, T}"/> instance so that
+        /// additional conditions can be chained fluently.
+        /// </returns>
+        /// <remarks>
+        /// This method generates the start of a grouped condition in the form:
+        /// <c>(Table.Column Operator Value</c>
+        /// The closing parenthesis should be added later when ending the group.
+        /// </remarks>
+        public WhereClause<TCommand, T> StartGroup(T Left, SQLOperator Operator, ConditionMetadata Right)
+        {
+            _cmd.Append($" ({typeof(T).Name}.{Left.ToString()} {Operator.ToSymbol()} {Right.Value}");
+            return this;
+        }
+        /// <summary>
+        /// Begins a grouped WHERE clause expression by appending an opening parenthesis
+        /// and the specified condition to the SQL command builder.
+        /// </summary>
+        /// <typeparam name="J">
+        /// The enumeration type representing the columns of the joined table.
+        /// Must be an <see cref="Enum"/>.
+        /// </typeparam>
+        /// <param name="Left">
+        /// The enum value indicating the left-hand side column or field of the condition.
+        /// </param>
+        /// <param name="Operator">
+        /// The SQL operator (e.g., Equal, NotEqual, GreaterThan) used to compare the values.
+        /// </param>
+        /// <param name="Right">
+        /// A <see cref="ConditionMetadata"/> instance representing the right-hand side value,
+        /// including its raw data and type-safe SQL representation.
+        /// </param>
+        /// <returns>
+        /// Returns the current <see cref="WhereClause{TCommand, T}"/> instance so that
+        /// additional conditions can be chained fluently.
+        /// </returns>
+        /// <remarks>
+        /// This method generates the start of a grouped condition in the form:
+        /// <c>(Table.Column Operator Value</c>
+        /// The closing parenthesis should be added later when ending the group.
+        /// </remarks>
+        public WhereClause<TCommand, T> StartGroup<J>(J Left, SQLOperator Operator, ConditionMetadata Right) where J : Enum
+        {
+            _cmd.Append($" ({typeof(J).Name}.{Left.ToString()} {Operator.ToSymbol()} {Right.Value}");
+            return this;
+        }
+
         /// <summary>
         /// Appends a closing parenthesis to terminate a grouped SQL condition.
         /// </summary>
@@ -160,10 +310,38 @@ namespace JunX.NETStandard.SQLBuilder
         /// <param name="Operator">The SQL operator used in the comparison.</param>
         /// <param name="Right">The value to compare against, represented as a string.</param>
         /// <returns>The current <see cref="WhereClause{TCommand, T}"/> instance for fluent chaining.</returns>
-        public WhereClause<TCommand, T> And(T Left, SQLOperator Operator, string Right)
+        public WhereClause<TCommand, T> And(T Left, SQLOperator Operator, object Right)
         {
             _cmd.Append(" AND ");
-            _cmd.Append($"{typeof(T).Name}.{Left.ToString()}" + Operator.ToSymbol() + Right);
+            _cmd.Append($"{typeof(T).Name}.{Left.ToString()}" + Operator.ToSymbol() + Right.ToString());
+            return this;
+        }
+        /// <summary>
+        /// Appends an additional condition to the SQL command using the logical AND operator.
+        /// </summary>
+        /// <param name="Left">
+        /// The column or field on the left-hand side of the condition, represented by the generic type <typeparamref name="T"/>.
+        /// </param>
+        /// <param name="Operator">
+        /// The SQL operator (e.g., Equal, NotEqual, GreaterThan) used to compare the values.
+        /// </param>
+        /// <param name="Right">
+        /// A <see cref="ConditionMetadata"/> instance representing the right-hand side value,
+        /// including its raw data and type-safe SQL representation.
+        /// </param>
+        /// <returns>
+        /// Returns the current <see cref="WhereClause{TCommand, T}"/> instance so that
+        /// additional conditions can be chained fluently.
+        /// </returns>
+        /// <remarks>
+        /// This method generates a condition in the form:
+        /// <c>AND Table.Column Operator Value</c>
+        /// and appends it to the SQL command builder.
+        /// </remarks>
+        public WhereClause<TCommand, T> And(T Left, SQLOperator Operator, ConditionMetadata Right)
+        {
+            _cmd.Append(" AND ");
+            _cmd.Append($"{typeof(T).Name}.{Left.ToString()}" + Operator.ToSymbol() + Right.Value);
             return this;
         }
         /// <summary>
@@ -198,6 +376,38 @@ namespace JunX.NETStandard.SQLBuilder
             _cmd.Append($" AND {typeof(J).Name}.{Left.ToString()} {Operator.ToSymbol()} {Right.ToString()}");
             return this;
         }
+        /// <summary>
+        /// Appends an additional condition to the SQL command using the logical AND operator,
+        /// with the column or field represented by an enumerated type.
+        /// </summary>
+        /// <typeparam name="J">
+        /// The enumeration type representing the columns of the joined table.
+        /// Must be an <see cref="Enum"/>.
+        /// </typeparam>
+        /// <param name="Left">
+        /// The enum value indicating the left-hand side column or field of the condition.
+        /// </param>
+        /// <param name="Operator">
+        /// The SQL operator (e.g., Equal, NotEqual, GreaterThan) used to compare the values.
+        /// </param>
+        /// <param name="Right">
+        /// A <see cref="ConditionMetadata"/> instance representing the right-hand side value,
+        /// including its raw data and type-safe SQL representation.
+        /// </param>
+        /// <returns>
+        /// Returns the current <see cref="WhereClause{TCommand, T}"/> instance so that
+        /// additional conditions can be chained fluently.
+        /// </returns>
+        /// <remarks>
+        /// This method generates a condition in the form:
+        /// <c>AND Table.Column Operator Value</c>
+        /// and appends it to the SQL command builder.
+        /// </remarks>
+        public WhereClause<TCommand, T> And<J>(J Left, SQLOperator Operator, ConditionMetadata Right) where J : Enum
+        {
+            _cmd.Append($" AND {typeof(J).Name}.{Left.ToString()} {Operator.ToSymbol()} {Right.Value}");
+            return this;
+        }
         #endregion
 
         #region OR
@@ -227,10 +437,38 @@ namespace JunX.NETStandard.SQLBuilder
         /// <param name="Operator">The SQL operator used in the comparison.</param>
         /// <param name="Right">The value to compare against, represented as a string.</param>
         /// <returns>The current <see cref="WhereClause{TCommand, T}"/> instance for fluent chaining.</returns>
-        public WhereClause<TCommand, T> Or(T Left, SQLOperator Operator, string Right)
+        public WhereClause<TCommand, T> Or(T Left, SQLOperator Operator, object Right)
         {
             _cmd.Append(" OR ");
-            _cmd.Append($"{typeof(T).Name}.{Left.ToString()}" + Operator.ToSymbol() + Right);
+            _cmd.Append($"{typeof(T).Name}.{Left.ToString()}" + Operator.ToSymbol() + Right.ToString());
+            return this;
+        }
+        /// <summary>
+        /// Appends an additional condition to the SQL command using the logical OR operator.
+        /// </summary>
+        /// <param name="Left">
+        /// The column or field on the left-hand side of the condition, represented by the generic type <typeparamref name="T"/>.
+        /// </param>
+        /// <param name="Operator">
+        /// The SQL operator (e.g., Equal, NotEqual, GreaterThan) used to compare the values.
+        /// </param>
+        /// <param name="Right">
+        /// A <see cref="ConditionMetadata"/> instance representing the right-hand side value,
+        /// including its raw data and type-safe SQL representation.
+        /// </param>
+        /// <returns>
+        /// Returns the current <see cref="WhereClause{TCommand, T}"/> instance so that
+        /// additional conditions can be chained fluently.
+        /// </returns>
+        /// <remarks>
+        /// This method generates a condition in the form:
+        /// <c>OR Table.Column Operator Value</c>
+        /// and appends it to the SQL command builder.
+        /// </remarks>
+        public WhereClause<TCommand, T> Or(T Left, SQLOperator Operator, ConditionMetadata Right)
+        {
+            _cmd.Append(" OR ");
+            _cmd.Append($"{typeof(T).Name}.{Left.ToString()}" + Operator.ToSymbol() + Right.Value);
             return this;
         }
         /// <summary>
@@ -266,6 +504,38 @@ namespace JunX.NETStandard.SQLBuilder
             _cmd.Append($" OR {typeof(J).Name}.{Left.ToString()} {Operator.ToSymbol()} {Right.ToString()}");
             return this;
         }
+        /// <summary>
+        /// Appends an additional condition to the SQL command using the logical OR operator,
+        /// with the column or field represented by an enumerated type.
+        /// </summary>
+        /// <typeparam name="J">
+        /// The enumeration type representing the columns of the joined table.
+        /// Must be an <see cref="Enum"/>.
+        /// </typeparam>
+        /// <param name="Left">
+        /// The enum value indicating the left-hand side column or field of the condition.
+        /// </param>
+        /// <param name="Operator">
+        /// The SQL operator (e.g., Equal, NotEqual, GreaterThan) used to compare the values.
+        /// </param>
+        /// <param name="Right">
+        /// A <see cref="ConditionMetadata"/> instance representing the right-hand side value,
+        /// including its raw data and type-safe SQL representation.
+        /// </param>
+        /// <returns>
+        /// Returns the current <see cref="WhereClause{TCommand, T}"/> instance so that
+        /// additional conditions can be chained fluently.
+        /// </returns>
+        /// <remarks>
+        /// This method generates a condition in the form:
+        /// <c>OR Table.Column Operator Value</c>
+        /// and appends it to the SQL command builder.
+        /// </remarks>
+        public WhereClause<TCommand, T> Or<J>(J Left, SQLOperator Operator, ConditionMetadata Right) where J : Enum
+        {
+            _cmd.Append($" OR {typeof(J).Name}.{Left.ToString()} {Operator.ToSymbol()} {Right.Value}");
+            return this;
+        }
         #endregion
 
         #region BETWEEN
@@ -290,6 +560,35 @@ namespace JunX.NETStandard.SQLBuilder
         {
             _cmd.Append(" WHERE " + $"{typeof(T).Name}.{Column.ToString()}");
             _cmd.Append(" BETWEEN " + Left.ToString() + " AND " + Right.ToString());
+            return this;
+        }
+        /// <summary>
+        /// Appends a WHERE clause condition to the SQL command using the BETWEEN operator.
+        /// </summary>
+        /// <param name="Column">
+        /// The column or field being compared, represented by the generic type <typeparamref name="T"/>.
+        /// </param>
+        /// <param name="Left">
+        /// A <see cref="ConditionMetadata"/> instance representing the lower bound value
+        /// of the range, including its raw data and type-safe SQL representation.
+        /// </param>
+        /// <param name="Right">
+        /// A <see cref="ConditionMetadata"/> instance representing the upper bound value
+        /// of the range, including its raw data and type-safe SQL representation.
+        /// </param>
+        /// <returns>
+        /// Returns the current <see cref="WhereClause{TCommand, T}"/> instance so that
+        /// additional conditions can be chained fluently.
+        /// </returns>
+        /// <remarks>
+        /// This method generates a WHERE clause in the form:
+        /// <c>WHERE Table.Column BETWEEN Value1 AND Value2</c>
+        /// and appends it to the SQL command builder.
+        /// </remarks>
+        public WhereClause<TCommand, T> WhereBetween(T Column, ConditionMetadata Left, ConditionMetadata Right)
+        {
+            _cmd.Append($" WHERE {typeof(T).Name}.{Column.ToString()} " +
+                $"BETWEEN {Left.Value} AND {Right.Value}");
             return this;
         }
         /// <summary>
@@ -324,6 +623,40 @@ namespace JunX.NETStandard.SQLBuilder
             return this;
         }
         /// <summary>
+        /// Appends a WHERE clause condition to the SQL command using the BETWEEN operator,
+        /// with the column or field represented by an enumerated type.
+        /// </summary>
+        /// <typeparam name="J">
+        /// The enumeration type representing the columns of the joined table.
+        /// Must be an <see cref="Enum"/>.
+        /// </typeparam>
+        /// <param name="Column">
+        /// The enum value indicating the column or field being compared.
+        /// </param>
+        /// <param name="Left">
+        /// A <see cref="ConditionMetadata"/> instance representing the lower bound value
+        /// of the range, including its raw data and type-safe SQL representation.
+        /// </param>
+        /// <param name="Right">
+        /// A <see cref="ConditionMetadata"/> instance representing the upper bound value
+        /// of the range, including its raw data and type-safe SQL representation.
+        /// </param>
+        /// <returns>
+        /// Returns the current <see cref="WhereClause{TCommand, T}"/> instance so that
+        /// additional conditions can be chained fluently.
+        /// </returns>
+        /// <remarks>
+        /// This method generates a WHERE clause in the form:
+        /// <c>WHERE JoinedTable.Column BETWEEN Value1 AND Value2</c>
+        /// and appends it to the SQL command builder.
+        /// </remarks>
+        public WhereClause<TCommand, T> WhereBetween<J>(J Column, ConditionMetadata Left, ConditionMetadata Right) where J : Enum
+        {
+            _cmd.Append($" WHERE {typeof(J).Name}.{Column.ToString()} " +
+                $"BETWEEN {Left.Value} AND {Right.Value}");
+            return this;
+        }
+        /// <summary>
         /// Appends a SQL <c>BETWEEN</c> clause for the specified column and range values.
         /// </summary>
         /// <param name="Column">The column to apply the <c>BETWEEN</c> condition to.</param>
@@ -344,6 +677,35 @@ namespace JunX.NETStandard.SQLBuilder
         {
             _cmd.Append(" " + $"{typeof(T).Name}.{Column.ToString()}");
             _cmd.Append(" BETWEEN " + Left.ToString() + " AND " + Right.ToString());
+            return this;
+        }
+        /// <summary>
+        /// Appends a condition to the SQL command using the BETWEEN operator.
+        /// </summary>
+        /// <param name="Column">
+        /// The column or field being compared, represented by the generic type <typeparamref name="T"/>.
+        /// </param>
+        /// <param name="Left">
+        /// A <see cref="ConditionMetadata"/> instance representing the lower bound value
+        /// of the range, including its raw data and type-safe SQL representation.
+        /// </param>
+        /// <param name="Right">
+        /// A <see cref="ConditionMetadata"/> instance representing the upper bound value
+        /// of the range, including its raw data and type-safe SQL representation.
+        /// </param>
+        /// <returns>
+        /// Returns the current <see cref="WhereClause{TCommand, T}"/> instance so that
+        /// additional conditions can be chained fluently.
+        /// </returns>
+        /// <remarks>
+        /// This method generates a condition in the form:
+        /// <c>Table.Column BETWEEN Value1 AND Value2</c>
+        /// and appends it to the SQL command builder.
+        /// </remarks>
+        public WhereClause<TCommand, T> Between(T Column, ConditionMetadata Left, ConditionMetadata Right)
+        {
+            _cmd.Append($" {typeof(T).Name}.{Column.ToString()} " +
+                $"BETWEEN {Left.Value} AND {Right.Value}");
             return this;
         }
         /// <summary>
@@ -376,6 +738,40 @@ namespace JunX.NETStandard.SQLBuilder
         public WhereClause<TCommand, T> Between<J>(J Column, object Left, object Right) where J: Enum
         {
             _cmd.Append($" {typeof(J).Name}.{Column.ToString()} BETWEEN {Left.ToString()} AND {Right.ToString()}");
+            return this;
+        }
+        /// <summary>
+        /// Appends a condition to the SQL command using the BETWEEN operator,
+        /// with the column or field represented by an enumerated type.
+        /// </summary>
+        /// <typeparam name="J">
+        /// The enumeration type representing the columns of the joined table.
+        /// Must be an <see cref="Enum"/>.
+        /// </typeparam>
+        /// <param name="Column">
+        /// The enum value indicating the column or field being compared.
+        /// </param>
+        /// <param name="Left">
+        /// A <see cref="ConditionMetadata"/> instance representing the lower bound value
+        /// of the range, including its raw data and type-safe SQL representation.
+        /// </param>
+        /// <param name="Right">
+        /// A <see cref="ConditionMetadata"/> instance representing the upper bound value
+        /// of the range, including its raw data and type-safe SQL representation.
+        /// </param>
+        /// <returns>
+        /// Returns the current <see cref="WhereClause{TCommand, T}"/> instance so that
+        /// additional conditions can be chained fluently.
+        /// </returns>
+        /// <remarks>
+        /// This method generates a condition in the form:
+        /// <c>JoinedTable.Column BETWEEN Value1 AND Value2</c>
+        /// and appends it to the SQL command builder.
+        /// </remarks>
+        public WhereClause<TCommand, T> Between<J>(J Column, ConditionMetadata Left, ConditionMetadata Right) where J : Enum
+        {
+            _cmd.Append($" {typeof(J).Name}.{Column.ToString()} " +
+                            $"BETWEEN {Left.Value} AND {Right.Value}");
             return this;
         }
         #endregion
