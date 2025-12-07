@@ -17,7 +17,7 @@ namespace JunX.NETStandard.MySQL
         /// <remarks>
         /// This property exposes the underlying connection object for advanced scenarios such as transaction management or manual command execution.
         /// </remarks>
-        public MySqlConnection Connection { get { return InternalVariables.Connection; } }
+        public MySqlConnection Connection => InternalVariables.Connection;
         /// <summary>
         /// Gets the current state of the internal <see cref="MySqlConnection"/> object.
         /// </summary>
@@ -27,7 +27,7 @@ namespace JunX.NETStandard.MySQL
         /// <remarks>
         /// This property reflects the runtime status of the internal connection and is useful for validating connection readiness before executing commands.
         /// </remarks>
-        public ConnectionState State { get { return InternalVariables.Connection.State; } }
+        public ConnectionState State => InternalVariables.Connection.State;
         /// <summary>
         /// Gets the internal <see cref="MySqlDataReader"/> containing the result set from the most recent <c>SELECT</c> execution.
         /// </summary>
@@ -38,7 +38,7 @@ namespace JunX.NETStandard.MySQL
         /// This property provides direct access to the raw data reader stored in <c>InternalVariables.Reader</c>.
         /// It is typically used for manual row and field traversal after invoking <c>ExecuteReader()</c>.
         /// </remarks>
-        public MySqlDataReader Reader { get { return InternalVariables.Reader; } }
+        public MySqlDataReader Reader => InternalVariables.Reader;
         /// <summary>
         /// Gets the internal <see cref="MySqlDataAdapter"/> used for data operations such as filling datasets or updating tables.
         /// </summary>
@@ -49,7 +49,7 @@ namespace JunX.NETStandard.MySQL
         /// This property provides access to the adapter stored in <c>InternalVariables.Adapter</c>.
         /// It is typically used for disconnected data access scenarios, including populating <see cref="DataSet"/> or synchronizing changes with the database.
         /// </remarks>
-        public MySqlDataAdapter Adapter { get { return InternalVariables.Adapter; } }
+        public MySqlDataAdapter Adapter => InternalVariables.Adapter;
         /// <summary>
         /// Gets the internal <see cref="DataSet"/> used for storing tabular data retrieved from the database.
         /// </summary>
@@ -60,7 +60,7 @@ namespace JunX.NETStandard.MySQL
         /// This property provides access to <c>InternalVariables.Dataset</c>, typically used for disconnected data operations,
         /// such as binding to UI controls, performing in-memory queries, or exporting structured results.
         /// </remarks>
-        public DataSet DataSet { get { return InternalVariables.Dataset; } }
+        public DataSet DataSet => InternalVariables.Dataset;
         /// <summary>
         /// Gets a value indicating whether the current <see cref="MySqlDataReader"/> contains one or more rows.
         /// </summary>
@@ -71,7 +71,7 @@ namespace JunX.NETStandard.MySQL
         /// This property reflects the <c>HasRows</c> state of <c>InternalVariables.Reader</c>.
         /// It is typically checked after executing a <c>SELECT</c> command to determine if any results were returned.
         /// </remarks>
-        public bool HasRows { get { return InternalVariables.Reader.HasRows; } }
+        public bool HasRows => InternalVariables.Reader.HasRows;
         /// <summary>
         /// Gets the internal list of stringified values retrieved from the most recent SQL <c>SELECT</c> execution.
         /// </summary>
