@@ -2,7 +2,7 @@
 <img src="JXNStandard.png" align="right" width="200px" height="200px" />
 
 <strong>ABOUT THIS SDK LIBRARY</strong>
-<p align="justify">This SDK Library is compiled using C#.NET Standard 2.0 to allow compatibility between .NET Core and .NET FrameWork</p>
+<p align="justify">This SDK Library is compiled using C#.NET Standard 2.0 to allow compatibility between .NET Core and .NET Framework</p>
 <br/>
 <p align="justify">This library contains multiple namespaces that can be useful for encryption/decryption, MySQL, SQL command building, XML & RDLC manipulation, and others.</p>
 <br/>
