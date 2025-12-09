@@ -13,7 +13,9 @@ namespace JunX.NETStandard.SQL.DataTypes
     /// VARCHAR(n) columns. It stores the underlying string in a helper type and
     /// provides validation, equality comparison, and operator overloads.
     /// </remarks>
-    public struct VarChar
+    public struct VarChar :
+        IValidateable,
+        IValueAccessible<string>
     {
         private VarCharBase _base;
         private readonly int _maxLen;
