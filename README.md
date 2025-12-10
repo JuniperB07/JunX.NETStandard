@@ -12,7 +12,7 @@
   <li><strong>JunX.NetStandard.EncryptionService</strong> - Contains classes and methods for symmetric AES encryption or decryption using a specified key.</li>
   <li><strong>JunX.NetStandard.MySQL</strong> - Contains classes, methods & extension methods, structs, and enums necessary for easier MySQL Database manipulation using the MySql.Data.MySqlClient library. This namespace also includes a class that will generate C# Enum files of tables in a specified database. Each Enum file will contain the table name and an enumeration of its columns.</li>
   <li><strong>JunX.NetStandard.OLEDB</strong> - Almost similar in contents and function as that of the NetStandard.MySQL namespace but tailored for OLEDB Database manipulation.</li>
-  <li><strong>JunX.NetStandard.SQLBuilder</strong> - Contains classes, methods, structs, and enums necessary for fluently building SQL commands.</li>
+  <li><strong>JunX.NetStandard.SQLBuilder</strong> - Contains classes, methods, structs, and enums necessary for fluently building SQL commands. Generic classes within this namespace is recommended to be used in conjunction with the JunX.NetStandard.MySQL namespace's automatic enum generation feature.</li>
   <li><strong>JunX.NetStandard.Utility</strong> - Contains various classes that allows Enum manipulation, Logging, Struct manipulation, and others.</li>
   <li><strong>JunX.NetStandard.XML</strong> - Contains classes, and methods for reading and manipulating XML files and RDLC files.</li>
 </ul>
